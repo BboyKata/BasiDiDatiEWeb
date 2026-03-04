@@ -1,0 +1,15 @@
+\contentsline {paragraph}{Descrizione Esame}{2}{section*.2}%
+\contentsline {part}{I\hspace {1em}Teoria}{2}{part.1}%
+\contentsline {section}{\numberline {1}Introduzione}{2}{section.1}%
+\contentsline {paragraph}{Cos'è un DBMS?}{2}{section*.3}%
+\contentsline {paragraph}{Architettura a livelli dei DBMS}{2}{section*.4}%
+\contentsline {subsection}{\numberline {1.1}Moduli di un DBMS}{3}{subsection.1.1}%
+\contentsline {paragraph}{Gestore delle interrogazioni}{3}{section*.7}%
+\contentsline {paragraph}{Gestore dei metodi di accesso}{3}{section*.8}%
+\contentsline {paragraph}{Gestore del buffer}{3}{section*.9}%
+\contentsline {paragraph}{Transazioni}{3}{section*.10}%
+\contentsline {subsection}{\numberline {1.2}Condivisione di una BD}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Gestione della memoria secondaria}{4}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Buffer}{4}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}Gestione del buffer}{4}{subsubsection.1.3.2}%
+\contentsline {section}{\numberline {2}Possibili domande d'esame}{5}{section.2}%
