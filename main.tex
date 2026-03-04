@@ -181,7 +181,59 @@
 			\end{itemize}
 			
 			\subsubsection{Gestione del buffer}
+			\paragraph{Scopo della gestione del buffer}\begin{itemize}
+				\item \textbf{Ridurre il numero di accessi alla memoria secondaria}\textit{GARANTENDO L'AFFIDABILITÀ.} \sitemize{\item 
+				In caso di \textbf{lettura}, se la pagina è già presente nel buffer, non è necessario
+				accedere alla memoria secondaria.
+				\item In caso di \textbf{scrittura}, il gestore del buffer può decidere di differire la scrittura
+				fisica (ammesso che ciò sia compatibile con la gestione dell’affidabilità)}
+				
+				\item Le politiche di gestione del buffer assomigliano a quelle
+				della gestione della memoria centrale da parte dei Sistemi
+				Operativi: obbediscono allo stesso principio, detto di località, in base al quale i dati
+				referenziati di recente hanno una maggiore probabilità di essere referenziati
+				nuovamente in futuro
+			\end{itemize}
 			
+			Il buffer offre ai moduli di livello più alto una interfaccia complessa, non si limita alle richieste di lettura e scrittura. Ha bisogno delle informazioni sul prevedibile riutilizzo delle pagine (per evitarne la riapertura); Ha bisogno delle informazioni sulla necessità di effettuare immediatamente gli aggiornamenti (per evitare la perdita in caso di guasto). Per la gestione dei buffer sono necessarie le seguenti
+			informazioni: \begin{itemize}
+				\item Un direttorio che per ogni pagina mantiene (ad esempio) il file fisico e il numero del blocco ad essa corrispondente.
+				\item Per ogni pagina del buffer il gestore mantiene due variabili di stato: \textbf{un contatore }che indica quanti programmi utilizzano la pagina e un \textbf{bit} che indica se la pagina è “sporca”, cioè se è stata modificata
+			\end{itemize}
+		
+		\paragraph{Funzioni del buffer manager}
+		Le politiche sono simili a quelle relative alla gestione della memoria da parte dei sistemi operativi. 
+		
+		\mybox{\textbf{Principio di "località dei dati”:} è alta la probabilità di dover riutilizzare i dati attualmente in uso.
+		
+		\textbf{Legge 80-20:} l'80\% delle operazioni utilizza sempre lo stesso 20\% dei dati.
+		}
+		
+		\paragraph{Operazioni per la gestione del buffer:} \begin{itemize}
+			\item \textbf{Fix:} Richiesta di accesso ad una pagina, richiede una lettura solo se la pagina non è nel buffer (incrementa il contatore associato alla pagina), ritorna il riferimento alla pagina nel buffer.
+			%%%% SISTEMA %%%
+			Cerca la pagina nel buffer: se c'è, restituisce l'indirizzo; per il principio di località ciò avviene abbastanza spesso. Altrimenti, cerca una pagina libera nel buffer (contatore a zero): Se la trova, restituisce l'indirizzo; se il BIT di stato segnala che la pagina è stata modificata, essa viene
+			aggiornata in memoria di massa. Altrimenti (se non ci sono pagine libere), due alternative
+			– “steal”: selezione di una "vittima", pagina occupata del buffer; i dati della
+			vittima sono scritti in memoria secondaria; viene letta la pagina di interesse
+			dalla memoria secondaria e si restituisce l'indirizzo
+			– “no-steal”: l'operazione viene posta in attesa (che si liberino pagine nel
+			buffer)
+			
+			\item \textbf{setDirty}
+			Comunica al buffer manager che la pagina è stata modificata. Viene modificato il BIT di stato relativo.
+			\item \textbf{Unfix:} indica che la transazione ha concluso l'utilizzo della pagina, decrementa il contatore associato alla pagina.
+			\item \textbf{Force:} Trasferisce in modo sincrono una pagina in memoria secondaria \textbf{su richiesta del gestore dell'affidabilità} (non del gestore degli accessi) per garantire che alcuni dati non vengano persi. Memorizza in maniera permanente le modifiche per garantire l'affidabilità.
+		\end{itemize}
+	
+		\mybox{La scrittura in memoria secondaria può avvenire in due
+			modi: \begin{itemize}
+				\item in modo sincrono quando è richiesto esplicitamente con una force
+				\item in modo asincrono (indipendente dall’applicazione) quando il buffer
+				manager lo ritiene opportuno (o necessario). In particolare, può decidere di anticipare o posticipare scritture per coordinarle
+				e/o sfruttare la disponibilità dei dispositivi
+			\end{itemize}
+		}
 			
 			
 			
@@ -240,5 +292,6 @@
 					\includegraphics[width=0.7\linewidth]{graphics/screenshot003}
 				\end{figure}
 				
+				\item \textit{\textbf{Si descriva in che modo le tuple vengono organizzate nelle pagine:}} 
 			\end{itemize}
 \end{document} 

@@ -12,4 +12,7 @@
 \contentsline {subsection}{\numberline {1.3}Gestione della memoria secondaria}{4}{subsection.1.3}%
 \contentsline {subsubsection}{\numberline {1.3.1}Buffer}{4}{subsubsection.1.3.1}%
 \contentsline {subsubsection}{\numberline {1.3.2}Gestione del buffer}{4}{subsubsection.1.3.2}%
-\contentsline {section}{\numberline {2}Possibili domande d'esame}{5}{section.2}%
+\contentsline {paragraph}{Scopo della gestione del buffer}{4}{section*.12}%
+\contentsline {paragraph}{Funzioni del buffer manager}{4}{section*.13}%
+\contentsline {paragraph}{Operazioni per la gestione del buffer:}{4}{section*.14}%
+\contentsline {section}{\numberline {2}Possibili domande d'esame}{6}{section.2}%
