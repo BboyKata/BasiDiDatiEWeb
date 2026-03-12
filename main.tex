@@ -294,4 +294,12 @@
 				
 				\item \textit{\textbf{Si descriva in che modo le tuple vengono organizzate nelle pagine:}} 
 			\end{itemize}
+			
+			
+			%%% INTEGRA E RECUPERA LEZIONE PREC.
+			B + Tree
+			F Chiavi, ogni chiave è seguita da un puntatore. La chiave $K_1$ ha un puntatore prima di sè $P_0$, quindi abbiamo $F+1$ puntatori che si chiama \textbf{Fan Out dell'albero}. (Dato Fan Out =4, abbiamo 3 chiavi). I puntatori saranno sempre uno in più, il Fan Out dice il numero massimo di puntatori che posso avere. In questo caso il puntatore $P_0$ che sta prima della prima chiave punta al sottoalbero che contiene le chiavi $K<K_1$. $P_F$ punta al sottoalbero che contiene le chiavi $K \geq K_F$ mentre $P_i$ è il puntatore che punta al sottoalbero che contiene le chiavi $K_i \leq K < K_{i+1}$.
+			Data la chiave di ricerca V, ad ogni nodo intermedio, se $V<K$ allora si segue il puntatore $P_0$, se $V\geq K_F$ si segue il puntatore $P_F$, altrimenti si segue il puntatore $P_j$ tale che $K_j \leq K < K_{j+1}$. Se l'indice è \textbf{primario} i nodi foglia contengono l'intera tupla, se l'indice è secondario i nodi foglia contengono i putnatori ai blocchi della BD che contengono le tuple. 
+			
+			\textbf{Inserimenti e cancellazioni:} nel caso di inserimento o eliminazione di una tupla devo risistemare l'albero affinché rispetti i vincoli. Se c'è posto nella foglia lo inserisco. Se arrivo in un nodo con numero di chiavi massimo devo dividere il nodo, splittarlo, in modo da inserirlo, ovviamente aggiungendo un nuovo puntatore. Eliminazione, c'è la possibilità di fare un merge. Se devo modificare il valore di una chiave, devo trattarle come eliminazioni seguite da inserimenti. 
 \end{document} 
