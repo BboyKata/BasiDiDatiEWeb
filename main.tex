@@ -335,6 +335,18 @@
 		 I \textbf{blocchi allocati al file} sono \textbf{B}, la funzione di HASH ritorna un numero tra \textbf{0 e B-1}. In caso di collisione i record vengono semplicemente allocati nel blocco fino ad esaurimento dello
 		 spazio libero; vengono accettate FdB (numero di record nel blocco) collisioni. Quando un blocco viene esaurito viene allocato un nuovo blocco collegato al precedente ed il record viene disposto nel nuovo blocco: \textit{CATENE DI OVERFLOW}.
 		 
+\mybox{		 È \textbf{l'organizzazione più efficiente per l'accesso diretto basato su valori della chiave} con condizioni di uguaglianza (accesso puntuale): il costo medio è di poco superiore all'unità e il caso peggiore è molto costoso ma talmente improbabile da poter essere ignorato. \textit{Le collisioni (overflow) sono di solito gestite con blocchi
+		collegati}. \textbf{Non è efficiente per ricerche basate su intervalli}: le funzioni HASH tendono a collocare valori vicini su blocchi diversi, ad esempio: ricerca degli studenti con matricola compresa tra 17010 e 17029 richiede 20 accessi diretti uno per ciascun valore dell’intervallo.}
+		 
+		 \begin{figure}[h!]
+		 	\centering
+		 	\includegraphics[width=0.7\linewidth]{graphics/screenshot007}
+		 	\caption{Esempio File hash. Numero tuple T = 40. Numero Blocchi B = 5.FdB = 10 (10 posizioni in ogni blocco). Posizioni disponibili = 50. FdR = 0.80. La funzione di HASH restituisce un numero tra 0 e 4. Numero di Overflow 2 → num. medio di accessi: 1,05}
+		 \end{figure}
+		 
+		 \subsection{Strutture ad Albero}
+		 
+		 
 		
 		
 			
