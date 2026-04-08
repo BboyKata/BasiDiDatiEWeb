@@ -395,6 +395,9 @@
 		
 		\textit{Domanda d'esame: si dia la definizione di indice, che cos'è un indice primario, secondario, denso e sparso.}
 		
+		\textit{Risposta:}l'indice è un file che ha un insieme di coppie con valore di chiave e indirizzo, se l'indice contiene le informazioni è un indice primario, se non contiene le informazioni è secondario.
+		Se contiene un Record per ogni valore della chiave è denso, se no è sparso. Gli indici primari possono essere sparsi. Gli indici secondari devono essere densi.
+		
 		\paragraph{Prestazioni degli indici}
 		\begin{itemize}
 			\item Accesso diretto sulla chiave efficiente, sia puntuale sia per intervalli
@@ -421,8 +424,27 @@
 		Tutte le strutture di indice viste finora sono basate su strutture ordinate e quindi sono poco flessibili in presenza di elevata dinamicità. Gli indici utilizzati dai DBMS sono più sofisticati. Si usano strutture al albero dinamiche. Sono efficienti in presenza di aggiornamenti.
 			
 		\subsection{Strutture ad albero dinamiche}	
+		Ogni albero è caratterizzato da un \textbf{nodo radice}, vari \textbf{nodi intermedi}, e vari \textbf{nodi foglia}. Ogni nodo coincide con una \textit{pagina o blocco} a livello di file system e di gestore del buffer. Ogni nodo ha un numero di figli abbastanza grande che dipende dall'ampiezza della pagina. I legami tra i nodi vengono stabiliti da \textit{puntatori} che collegano fra loro le pagine.
+		
+		\mybox{	Requisito importante per il buon funzionamento di queste strutture è che devono essere \textbf{bilanciate}, ovvero che la \textit{lunghezza del cammino che collega la radice alle foglie è \textbf{costante}}, ovvero che il tempo di accesso è uguale per tutte le informazioni.}	
+		
+		\subsubsection{Albero binario di ricerca}
+		È un albero binario etichettato in cui per ogni nodo il \textit{sottoalbero sinistro} contiene solo \textbf{etichette} \textit{minori di quella del nodo} e il \textit{sotttoalbero destro} etichette maggiori. \textbf{Tempo di ricerca ed inserimento pari alla profondità.} Logaritmico nel caso "medio".
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.5\linewidth]{graphics/screenshot011}
+		\end{figure}
+		
+		\subsubsection{Albero di ricerca di ordine Q}
+		Ogni nodo ha fino a \textbf{Q figli} e fino a \textbf{Q-1} etichette, ordinate.
+		
+		Nell'i-esimo sottoalbero abbiamo tutte etichette magiori della (i-1)-esima etichetta e minori della i-esima.
 			
-			
+		\begin{center}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot012}
+		\end{center}
+		
 			
 			
 			

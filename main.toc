@@ -29,4 +29,7 @@
 \contentsline {paragraph}{Tipi di indice}{9}{section*.21}%
 \contentsline {paragraph}{Prestazioni degli indici}{10}{section*.22}%
 \contentsline {paragraph}{Indici multilivello}{10}{section*.23}%
-\contentsline {section}{\numberline {3}Possibili domande d'esame}{11}{section.3}%
+\contentsline {subsection}{\numberline {2.4}Strutture ad albero dinamiche}{11}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Albero binario di ricerca}{11}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}Albero di ricerca di ordine Q}{11}{subsubsection.2.4.2}%
+\contentsline {section}{\numberline {3}Possibili domande d'esame}{13}{section.3}%
