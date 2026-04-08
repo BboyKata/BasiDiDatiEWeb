@@ -24,4 +24,9 @@
 \contentsline {subsection}{\numberline {2.2}Strutture ad accesso calcolato: HASH}{7}{subsection.2.2}%
 \contentsline {paragraph}{Funzione HASH}{7}{section*.17}%
 \contentsline {subsubsection}{\numberline {2.2.1}File HASH}{8}{subsubsection.2.2.1}%
-\contentsline {section}{\numberline {3}Possibili domande d'esame}{9}{section.3}%
+\contentsline {subsection}{\numberline {2.3}Strutture ad Albero}{9}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Indici di file}{9}{subsubsection.2.3.1}%
+\contentsline {paragraph}{Tipi di indice}{9}{section*.21}%
+\contentsline {paragraph}{Prestazioni degli indici}{10}{section*.22}%
+\contentsline {paragraph}{Indici multilivello}{10}{section*.23}%
+\contentsline {section}{\numberline {3}Possibili domande d'esame}{11}{section.3}%

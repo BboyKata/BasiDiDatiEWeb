@@ -344,19 +344,83 @@
 		 	\caption{Esempio File hash. Numero tuple T = 40. Numero Blocchi B = 5.FdB = 10 (10 posizioni in ogni blocco). Posizioni disponibili = 50. FdR = 0.80. La funzione di HASH restituisce un numero tra 0 e 4. Numero di Overflow 2 → num. medio di accessi: 1,05}
 		 \end{figure}
 		 
+		 \newpage
 		 \subsection{Strutture ad Albero}
+		 L'organizzazione ad albero può essere utilizzata per realizzare \textit{strutture primarie (contenenti i dati)} e \textit{strutture secondarie}, che favoriscono l'accesso ai dati senza contenere i dati stessi.
 		 
+		 \mybox{È leggermente \textit{meno efficiente} per accessi puntuali, ma mantiene la stessa efficienza anche per accessi basati su interalli.}
+		 \subsubsection{Indici di file}
+		 \textbf{Indice:} struttura ausiliaria per l'\textit{accesso efficiente} ai record di un file sulla base dei valori di un campo (o di una concatenazione di campi) detto \textbf{chiave} (o, meglio, pseudochiave, perché non è necessariamente identificante).
 		 
+		 \mybox{\textbf{Idea fondamentale:} l'indice analitico di un libro, lista di coppie (termine, pagina), ordinata alfabeticamente sui termini, posta in fondo al libro e separabile da esso.}
+		 
+		 Un indice \textit{I} di un file \textit{f} è un \textbf{altro file}, con \textbf{record a due campi:} \textit{chiave} e \textit{indirizzo} (dei record di \textit{f} o dei relativi blocchi), \textit{ordinato} secondo i valori della chiave.
+		 
+		\paragraph{Tipi di indice}
+		A seconda della popolazione dell'indice abbiamo:
+		\begin{itemize}
+			\item \textbf{Indice denso:} contiene un record per ciascun valore del campo chiave.
+			\item \textbf{Indice sparso:} contiene un numero di record \textit{inferiore} rispetto al numero di valori diversi dal campo chiave, cioè \textit{esistono valori della chiave che NON sono presenti nell'indice.}
+		\end{itemize}
+		Vi è poi la differenza tra:\begin{itemize}
+			\item \textbf{Indice primario:} l'indice contiene al suo interno i dati o è realizzato su un file ordinato sullo stesso capmo su cui è definito l'indice stesso. \textit{Può essere sparso.}
+			
+			\textit{Esempio: indice generale di un libro, determina la posizione dei capitoli che sono i dati del libro.}
+			
+			Un indice primario, grazie all'ordinamento, può essere realizzato "puntando" ad un solo record di un blocco (indice sparso), poiché gli altri record sono posti in modo adiacente a quello puntato.
+			
+			\item \textbf{Indice secondario:} l'indice è definito su un campo con ordinamento diverso da quello di memorizzazione. \textbf{DEVE essere denso.}
+			
+			\textit{Esempio: indice analitico di un libro, che è l'indice secondario che garantisce l'accesso senza contenere i dati.}
+			
+			Un indice secondario deve contenere tutti i rifermenti a tutti i valori della chiave (indice denso), infatti valori consecutivi della chiave possono trovarsi in blocchi diversi.
+			
+		\end{itemize}
 		
+		I benefici legati alla presenza di indici secondari sono molto più sensibili. \textit{Ogni file può avere al più un indice primario e un numero qualunque di indici secondari (su campi diversi).}.
 		
+		\textbf{Un file hash non può avere un indice primario: Il criterio di memorizzazione è stabilito dalla funzione di HASH e quindi non può essere determinato dall’indice.}
 			
+	
+		\noindent
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/screenshot008}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/screenshot009}
+		\end{minipage}
+		
+		\textit{Domanda d'esame: si dia la definizione di indice, che cos'è un indice primario, secondario, denso e sparso.}
+		
+		\paragraph{Prestazioni degli indici}
+		\begin{itemize}
+			\item Accesso diretto sulla chiave efficiente, sia puntuale sia per intervalli
+			\item scansione sequenziale ordinata efficiente: tutti gli indici ( in particolare quelli secondari) forniscono un \textbf{ordinamento logico} sui record dei file.
+			\item Modifiche della chiave, inserimenti, eliminazioni \textit{inefficienti}: esistono tecniche per alleviare i problemi: \textit{file o blocchi di overflow, marcatura per le eliminiazioni, riempimento parziale, blocchi collegati (non contigui), riorganizzazioni periodiche...}
 			
+		\end{itemize}
+		
+		\mybox{\textbf{Osservazione sugli indici secondari:} si possono usare, come detto, puntatori ai blocchi oppure puntatori ai record:
+			\begin{itemize}
+				\item I puntatori ai blocchi sono più compatti
+				\item I puntatori ai record permettono di semplificare alcune operazioni (effettuate solo sull'indice, senza accedere al file se non quando indispensabile)
+			\end{itemize}
+		}
+		
+		\paragraph{Indici multilivello}
+		Gli indici sono file essi stessi e quindi ha senso costruire indici sugli indici, per evitare di fare ricerche fra blocchi diversi. Possono esistere più livelli fino ad avere il livello più alto con un solo blocco. I livelli sono di solito abbastanza pochi, perché l'indice è ordinato, quindi l'indice sull'indice è sparso, e i record dell'indice sono piccoli.
 			
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot010}
+		\end{figure}
+		
+		Tutte le strutture di indice viste finora sono basate su strutture ordinate e quindi sono poco flessibili in presenza di elevata dinamicità. Gli indici utilizzati dai DBMS sono più sofisticati. Si usano strutture al albero dinamiche. Sono efficienti in presenza di aggiornamenti.
 			
-			
-			
-			
-			
+		\subsection{Strutture ad albero dinamiche}	
 			
 			
 			
