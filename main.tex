@@ -104,12 +104,12 @@
 		secondaria.
 		\item \textbf{condivise} (utilizzate da applicazioni diverse)
 			\end{itemize}
-		garantendo affidabilità (resistenza a malfunzionamenti
-		hardware e software) e privatezza (con una disciplina e un
+		garantendo \textbf{affidabilità} (resistenza a malfunzionamenti
+		hardware e software) e \textbf{privatezza} (con una disciplina e un
 		controllo degli accessi).
 		Come ogni prodotto informatico, un DBMS deve essere
-		efficiente (utilizzando al meglio le risorse di spazio e tempo
-		del sistema) ed efficace (rendendo produttive le attività dei
+		\textbf{efficiente} (utilizzando al meglio le risorse di spazio e tempo
+		del sistema) ed \textbf{efficace} (rendendo produttive le attività dei
 		suoi utilizzatori).
 		\paragraph{Architettura a livelli dei DBMS}
 		I DBMS sono organizzati secondo una architettura a livelli\begin{itemize}
@@ -142,15 +142,17 @@
 				\label{fig:screenshot002}
 			\end{figure}
 			
+			
+			
 			\paragraph{Gestore delle interrogazioni} Prende la query logica e la traduce in una forma interna. Le trasforma per renderle più efficienti e le realizza in termini di \textbf{operazioni di basso livello} che fanno riferimento alla struttura fisica dei file.
 			
-			\paragraph{Gestore dei metodi di accesso} Esegue le operazioni di basso livello. Il modulo conosce i dettagli detta struttura fisica e quindi trasforma le richieste in operazioni di lettura e scrittura di dati in memoria secondaria. Tali operazioni vengono mediate dal GESTORE DEL BUFFER.
+			\paragraph{Gestore dei metodi di accesso} Esegue le operazioni di basso livello. Il modulo conosce i dettagli della struttura fisica e quindi trasforma le richieste in operazioni di lettura e scrittura di dati in memoria secondaria. Tali operazioni vengono mediate dal GESTORE DEL BUFFER.
 			
 			\paragraph{Gestore del buffer} Ha la responsabilità di manetenere temporaneamente porzioni della BD in memoria centrale e invia le richieste di lettura e scrittura fisica al \textbf{gestore della memoria secondaria.}
 			
-			\paragraph{Transazioni} le basi di dati si basano sul concetto di transazione (insieme di operazioni), che deve essere \textbf{atomica}(o tutto o niente) e \textbf{definitiva} (dopo che è andata a buon fine, deve rimanere permanente la transazione eseguita).
+			\paragraph{Transazioni} le basi di dati si basano sul concetto di transazione (insieme di operazioni), che deve essere \textbf{atomiche} (o tutto o niente) e \textbf{definitive} (dopo che è andata a buon fine, deve rimanere permanente la transazione eseguita).
 			\subsection{Condivisione di una BD}
-			Attività diverse su dati in parte condivisi, questo richiede \textbf{meccanismi di autorizzazione} e attività multi-utente su dati condivisi:
+			Una BD è una risorsa \textit{integrata}, \textit{condivisa} fra le varie applicazioni, e di conseguenza vi sono attività diverse su dati in parte condivisi; questo richiede \textbf{meccanismi di autorizzazione} e attività multi-utente su dati condivisi:
 			richiedono \textbf{controllo della concorrenza.} L'accesso concorrente in scrittura deve essere regolato.
 			
 			\begin{figure}[h!]
@@ -158,7 +160,9 @@
 				\includegraphics[width=0.4\linewidth]{graphics/screenshot003}
 			\end{figure}
 			
-			Il gestore della concorrenza e il getore della affidabilità sono sottomoduli del gestore delle transazioni (DBMS sistema informativo transazionale.) \textit{Quali sono i moduli che mi permettono di gestire le transazioni in un DBMS?} Significa gestire la concorrenza e gestire l'affidabilità.
+			Il \textbf{gestore della concorrenza e il gestore della affidabilità sono sottomoduli del gestore delle transazioni} (DBMS sistema informativo transazionale.) Significa gestire la concorrenza e gestire l'affidabilità.
+			
+			\mybox{\textbf{Domanda:} \textit{Quali sono i moduli che mi permettono di gestire le transazioni in un DBMS?}}
 			
 			\subsection{Gestione della memoria secondaria}
 			
@@ -169,7 +173,7 @@
 			\begin{itemize}
 				\item Area di memoria centrale, gestita dal DBMS (preallocata) e condivisa fra le
 				transazioni.
-				\item Organizzato in pagine di dimensioni pari o multiple di quelle dei blocchi di
+				\item Organizzato in \textbf{pagine} di dimensioni pari o multiple di quelle dei blocchi di
 				memoria secondaria.
 				 (Per semplicità ipotizzeremo che ciascuna pagina corrisponda ad un blocco)
 				\item L’allocazione di buffer sempre più grandi, riduce il numero di accessi alla
@@ -182,7 +186,7 @@
 			
 			\subsubsection{Gestione del buffer}
 			\paragraph{Scopo della gestione del buffer}\begin{itemize}
-				\item \textbf{Ridurre il numero di accessi alla memoria secondaria}\textit{GARANTENDO L'AFFIDABILITÀ.} \sitemize{\item 
+				\item \textbf{Ridurre il numero di accessi alla memoria secondaria} \textit{GARANTENDO L'AFFIDABILITÀ.} \sitemize{\item 
 				In caso di \textbf{lettura}, se la pagina è già presente nel buffer, non è necessario
 				accedere alla memoria secondaria.
 				\item In caso di \textbf{scrittura}, il gestore del buffer può decidere di differire la scrittura
@@ -195,10 +199,10 @@
 				nuovamente in futuro
 			\end{itemize}
 			
-			Il buffer offre ai moduli di livello più alto una interfaccia complessa, non si limita alle richieste di lettura e scrittura. Ha bisogno delle informazioni sul prevedibile riutilizzo delle pagine (per evitarne la riapertura); Ha bisogno delle informazioni sulla necessità di effettuare immediatamente gli aggiornamenti (per evitare la perdita in caso di guasto). Per la gestione dei buffer sono necessarie le seguenti
+			Il buffer offre ai moduli di livello più alto una interfaccia complessa, non si limita alle richieste di lettura e scrittura. Ha bisogno delle informazioni sul \textbf{prevedibile riutilizzo delle pagine} (per evitarne la riapertura); Ha bisogno delle informazioni sulla necessità di \textbf{effettuare immediatamente gli aggiornamenti} (per evitare la perdita in caso di guasto). Per la gestione dei buffer sono necessarie le seguenti
 			informazioni: \begin{itemize}
 				\item Un direttorio che per ogni pagina mantiene (ad esempio) il file fisico e il numero del blocco ad essa corrispondente.
-				\item Per ogni pagina del buffer il gestore mantiene due variabili di stato: \textbf{un contatore }che indica quanti programmi utilizzano la pagina e un \textbf{bit} che indica se la pagina è “sporca”, cioè se è stata modificata
+				\item Per ogni pagina del buffer il gestore mantiene due variabili di stato: \textbf{un contatore }che indica quanti programmi utilizzano la pagina e un \textbf{bit} che indica se la pagina è “sporca”, cioè se è stata modificata (\textit{dirty bit}).
 			\end{itemize}
 		
 		\paragraph{Funzioni del buffer manager}
@@ -210,15 +214,31 @@
 		}
 		
 		\paragraph{Operazioni per la gestione del buffer:} \begin{itemize}
-			\item \textbf{Fix:} Richiesta di accesso ad una pagina, richiede una lettura solo se la pagina non è nel buffer (incrementa il contatore associato alla pagina), ritorna il riferimento alla pagina nel buffer.
-			%%%% SISTEMA %%%
-			Cerca la pagina nel buffer: se c'è, restituisce l'indirizzo; per il principio di località ciò avviene abbastanza spesso. Altrimenti, cerca una pagina libera nel buffer (contatore a zero): Se la trova, restituisce l'indirizzo; se il BIT di stato segnala che la pagina è stata modificata, essa viene
-			aggiornata in memoria di massa. Altrimenti (se non ci sono pagine libere), due alternative
-			– “steal”: selezione di una "vittima", pagina occupata del buffer; i dati della
-			vittima sono scritti in memoria secondaria; viene letta la pagina di interesse
-			dalla memoria secondaria e si restituisce l'indirizzo
-			– “no-steal”: l'operazione viene posta in attesa (che si liberino pagine nel
-			buffer)
+			\item \textbf{Fix:} Operazione che permette a un processo di accedere a una pagina, caricandola dal disco solo se non è già presente nel buffer. Incrementa il contatore dei riferimenti (pin count) della pagina per bloccarla ed evitare che venga rimossa mentre è in uso. Restituisce il riferimento (indirizzo) alla pagina nel buffer.
+			
+			\textbf{Passi dell'operazione:}
+			\begin{enumerate}
+				\item \textbf{Cerca la pagina nel buffer.}
+				\begin{itemize}
+					\item Se è presente (grazie al principio di località, ciò avviene abbastanza spesso): incrementa il contatore e restituisce l'indirizzo.
+					\item Se non è presente: procedi al passo successivo.
+				\end{itemize}
+				
+				\item \textbf{Cerca un frame libero} (cioè una pagina con contatore = 0, non usata da nessun processo).
+				\begin{itemize}
+					\item Se lo trova: 
+					\begin{itemize}
+						\item Se il dirty bit (bit di stato modificato) è 1, riscrive la pagina in memoria di massa prima di sovrascriverla.
+						\item Carica la nuova pagina dal disco, imposta il contatore a 1, restituisce l'indirizzo.
+					\end{itemize}
+					\item Se non trova frame liberi (tutti i contatori sono $> 0$): adotta una delle due strategie:
+					\begin{itemize}
+						\item \textbf{Steal:} seleziona una pagina "vittima" (es. con algoritmo LRU), la scrive su disco se modificata, la sovrascrive con la nuova pagina, restituisce l'indirizzo.
+						\item \textbf{No-steal:} mette l'operazione in attesa finché non si libera un frame (cioè qualche processo esegue Unfix portando un contatore a 0).
+					\end{itemize}
+				\end{itemize}
+			\end{enumerate}
+		
 			
 			\item \textbf{setDirty}
 			Comunica al buffer manager che la pagina è stata modificata. Viene modificato il BIT di stato relativo.
@@ -228,14 +248,95 @@
 	
 		\mybox{La scrittura in memoria secondaria può avvenire in due
 			modi: \begin{itemize}
-				\item in modo sincrono quando è richiesto esplicitamente con una force
-				\item in modo asincrono (indipendente dall’applicazione) quando il buffer
-				manager lo ritiene opportuno (o necessario). In particolare, può decidere di anticipare o posticipare scritture per coordinarle
-				e/o sfruttare la disponibilità dei dispositivi
+				\item in modo \textbf{sincrono} quando è richiesto esplicitamente con una force
+				\item in modo \textbf{asincrono} (indipendente dall’applicazione) quando il buffer
+				manager lo ritiene opportuno (o necessario). In particolare, può decidere di anticipare o posticipare scritture per coordinarle e/o sfruttare la disponibilità dei dispositivi
 			\end{itemize}
 		}
+		
+		\newpage
+		\section{Gestione delle TUPLE nelle pagine}
+		Ciascuna pagina contiene l'\textit{informazione utile}, cioè i dati veri e proprio, e l'\textit{informazione di controllo}, per accedere all'informazione utile. I blocchi (componenti fisici di un file) e i record (componenti logici) hanno dimensioni in generale diverse: la dimensione del blocco \textit{dipende dal file system} e la dimensione del record dipende dalle esigenze del record.
+		\paragraph{Fattore di blocco} Il numero di \textbf{record} in un \textbf{blocco} è pari al rapporto fra la dimensione del blocco $L_B$ e la dimensione media dei record $L_R$. Se $L_B > L_R$ possiamo avere più record in un blocco:$ \lfloor L_B / L_R \rfloor$. Lo spazio residuo può essere \textit{utilizzato}, cioè \textbf{spanned} (impaccato) o non utilizzato, cioè \textbf{unspanned}
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.9\linewidth]{graphics/screenshot004}
+			\label{fig:screenshot004}
+		\end{figure}
+		
+		Abbiamo diverse strutture primarie per l'organizzazione di file, e stabiliscono il \textit{criterio secondo cui le tuple sono disposte nel file}. Ci sono tre categorie principali di strutture:\begin{itemize}
+			\item \textbf{Sequenziali:} disposizione consecuitva delle tuple
+			\item \textbf{Ad accesso calcolato - HASH:} disposizione in posizioni che dipendono dall'esecuzione di un algoritmo
+			\item \textbf{Ad albero:} usate soprattutto come \textbf{strutture secondarie.}
+		\end{itemize}
+		
+		\subsection{Strutture sequenziali}
+		Nelle strutture sequenziali un file è costituito da vari blocchi di memoria "logicamente" consecutivi. Le tuple vengono inserite nei blocchi rispettando una sequenza. 
+		\subsubsection{Struttura seriale (disordinata)} È la struttura sequenziale più semplice ma anche più diffusa, le tuple venogno inserite nel file nell'ordine in cui si presentano; non esiste un ordinamento basato su qualche valore. Viene anche chiamata \textbf{"entry sequenced"}/file heap/file disordinato. Gli inserimento vengono effettuati \textit{in coda} o \textit{al posto di record cancellati}. Le \textbf{cancellazioni} si effettuano marcando il record come "cancellato". le tuple vengono periodicamente riorganizzate per eliminare lo spazio sprecato. 
+		
+		È molto diffusa nelle basi di dati relazionali, associata ad inidici secondari. È molto efficiente per le operazioni di inserimento, poiché è sufficiente mantenere un riferimento all'ultimo blocco. Le \textit{ricerche sono poco efficienti:} richiedono una scansione sequenziale di tutti i record, con un costo lineare nel numero di blocchi del file. Per questo motivo sono spesso usate insieme a strutture secondarie usate per favorire gli accessi.
+		\subsubsection{Struttura ad array} È possibile solo quando le tuple hanno lunghezza fissa: al file viene associato un numero di blocchi contigui; ogni \textit{blocco} ha un numero fisso di posizioni disponibili per le tuple; ogni \textit{tupla} ha un indice \textit{i} e viene posta nella posizione dell'indice associato. Questa struttura non è quasi mai utilizzata dai DBMS anche se sono efficienti per la ricerca.
+		
+		\subsubsection{Strutture ordinate (clustered)}
+		Prevedono la memorizzazione dei record secondo un \textbf{ordinamento fisico coerente con l'ordinamento di un campo detto CHIAVE.} Permettono ricerche binarie, ma solo fino ad un certo punto, poiché senza indici non conosci la disposizione dei blocchi, quindi non puoi \textit{calcolare la posizione a metà di un file}. Per questo, nelle basi di dati relazionali si utilizzano quasi solo in combinazioni con indici come \textbf{file ISAM} o file ordinati con \textit{indice primario.} ISAM è l'acronimo di \textit{Indexed Sequential Access Method}.
+
+		\subsection{Strutture ad accesso calcolato: HASH}
+		Le tuple sono collocate in posizioni che dipendono dall'esecuziuone di un algoritmo. Permettono un accesso diretto molto efficiente. La tecnica si basa su quella utilizzata per le tavole hash in memoria centrale.
+		
+		\textbf{Obiettivo}: accesso diretto ad un insieme di record sulla base del valore di un campo (detto chiave, che per semplicità supponiamo identificante, ma non è necessario). \begin{itemize}
+			\item Se i possibili valori della chiave sono in numero paragonabile al numero di record (e corrispondono ad un "tipo indice") allora usiamo un array. \textit{Esempio: università con 1000 studenti e numeri di matricola compresi fra 1 e 1000 o poco più e file con tutti gli studenti}. 
+			\item Se i possibili valori della chiave sono molti di più di quelli effettivamente utilizzati, non possiamo usare l'array (spreco); \textit{ad esempio: 40 studenti e numero di matricola di 6 cifre (un milione di possibili chiavi)}. 
+		\end{itemize}
 			
-			
+		Volendo continuare ad usare qualcosa di simile ad un array,ma senza sprecare spazio, possiamo pensare di
+		trasformare i valori della chiave in possibili indici di un array: \textbf{Funzione HASH}.
+		\paragraph{Funzione HASH} Associa ad ogni valore della chiave un "indirizzo", in uno spazio di
+		dimensione paragonabile (leggermente superiore) rispetto a quello strettamente necessario. La funzione non può essere iniettiva, quindi il numero di possibili chiavi è molto maggiore del numero di possibili indirizzi ("lo
+		spazio delle chiavi è più grande dello spazio degli indirizzi"), ed esiste la possibilità di collisioni (chiavi diverse che corrispondono allo stesso indirizzo). Le buone funzioni hash distribuiscono in modo causale e uniforme,
+		riducendo le probabilità di collisione (che si riduce aumentando lo spazio ridondante).  Varie tecniche: posizioni successive disponibili, tabella di overflow (gestita in forma collegata), funzioni hash "alternative".
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot005}
+		\end{figure}
+		
+		
+		\mybox{
+\textbf{Nota:}
+\begin{itemize}
+			\item le collisioni ci sono (quasi) sempre
+	\item le collisioni multiple hanno probabilità che decresce al crescere della
+	molteplicità
+	\item la molteplicità media delle collisioni è molto bassa 
+\end{itemize}
+
+		}
+		
+		\subsubsection{File HASH}
+		 L'idea è la stessa della tavola hash, ma si basa sull'organizzazione in blocchi. L’operazione di costo unitario è l’accesso ad un blocco che può contenere diversi record. I blocchi sono riempiti solo in parte: \begin{itemize}
+		 	\item \textbf{Fattore di riempimento FdR:} frazione dello spazio fisico disponibile mediamente utilizzato. \textit{Ad esempio: 40 record di studenti su 50 posizioni disponibili} $\to FdR = 40/50 = 0.80$
+		 	\item \textbf{Fattore di blocco FdB:} rapporto fra la dimensione del blocco $L_B$ e la dimensione del record $L_R$: $ FdB = \lfloor L_B / L_R \rfloor$
+		 \end{itemize}
+		 Se supponiamo di avere:\begin{itemize}
+		 	\item \textbf{T:} numero di tuple previsto per il file
+		 	\item \textbf{FdB:} fattore di blocco
+		 	\item \textbf{FdR:} fattore di riempimento
+		 \end{itemize}
+		 Allora il file può avere un numero di \textbf{Blocchi B} pari a $B = \lceil \dfrac{T}{FdR\cdot FdB} \rceil$
+		 
+		 La funzione di HASH ritorna un numero compreso tra 0 e $B-1$, interpretato come il numero del blocco nell'ambito dei blocchi allocati al file.
+		 
+		 \begin{figure}[h!]
+		 	\centering
+		 	\includegraphics[width=0.2\linewidth]{graphics/screenshot006}
+		 \end{figure}
+		 
+		 I \textbf{blocchi allocati al file} sono \textbf{B}, la funzione di HASH ritorna un numero tra \textbf{0 e B-1}. In caso di collisione i record vengono semplicemente allocati nel blocco fino ad esaurimento dello
+		 spazio libero; vengono accettate FdB (numero di record nel blocco) collisioni. Quando un blocco viene esaurito viene allocato un nuovo blocco collegato al precedente ed il record viene disposto nel nuovo blocco: \textit{CATENE DI OVERFLOW}.
+		 
+		
+		
 			
 			
 			
