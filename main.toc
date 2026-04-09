@@ -32,4 +32,14 @@
 \contentsline {subsection}{\numberline {2.4}Strutture ad albero dinamiche}{11}{subsection.2.4}%
 \contentsline {subsubsection}{\numberline {2.4.1}Albero binario di ricerca}{11}{subsubsection.2.4.1}%
 \contentsline {subsubsection}{\numberline {2.4.2}Albero di ricerca di ordine Q}{11}{subsubsection.2.4.2}%
-\contentsline {section}{\numberline {3}Possibili domande d'esame}{13}{section.3}%
+\contentsline {subsubsection}{\numberline {2.4.3}B-Tree}{12}{subsubsection.2.4.3}%
+\contentsline {paragraph}{Inserimento in B-tree}{12}{section*.26}%
+\contentsline {paragraph}{Inserimento in nodo saturo}{13}{section*.27}%
+\contentsline {paragraph}{Cancellazione da B-tree di chiave K}{13}{section*.28}%
+\contentsline {paragraph}{Esercizio}{15}{section*.33}%
+\contentsline {subsubsection}{\numberline {2.4.4}B+ Tree}{18}{subsubsection.2.4.4}%
+\contentsline {paragraph}{Inserimento di una chiave}{18}{section*.46}%
+\contentsline {paragraph}{Rimozione di una chiave}{18}{section*.47}%
+\contentsline {paragraph}{Esercizio costruzione B+Tree}{21}{section*.57}%
+\contentsline {paragraph}{Esercizio 2 da risolvere:}{21}{section*.60}%
+\contentsline {section}{\numberline {3}Possibili domande d'esame}{22}{section.3}%

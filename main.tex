@@ -445,13 +445,306 @@
 			\includegraphics[width=0.7\linewidth]{graphics/screenshot012}
 		\end{center}
 		
+		\subsubsection{B-Tree}
+		Nei B-Tree i \textit{nodi intermedi possono avere puntatori direttamente ai dati.} Ogni nodo ha la struttura seguente: \large \begin{equation*}
+			[p_0 (k_1,r_1) p_1 ... p_{j-1}(k_j,r_j) p_j]
+		\end{equation*} \normalsize
+		dove $r_i$ è un indirizzo al record di chiave $k_i$ e $p_i$ è un puntatore ad un figlio. \begin{itemize}
+			\item Le chiavi $k_i$ sono in ogni nodo sono ordinate. 
+			\item Ogni nodo non foglia con \textit{j} chiavi ha \textit{j+1} figli
+			\item Tutte le chiavi associate ad un figlio tramite il puntatore $p_i$ sono comprese \textbf{strettamente} tra $k_i$ e $k_{i+1}$. 
+			\item Ogni chiave fa riferimento ad un indirizzo, quindi nell'albero non ci sono chiavi duplicate.
+		\end{itemize}
+		
+		\noindent
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/screenshot013}
+			\captionof{figure}{B-Tree con riferimento a valori intermedi}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/screenshot014}
+			\captionof{figure}{Estratto di B-tree di ordine 5}
+		\end{minipage}
+		
+		\vspace{1em}
+		\textbf{Definizione di B-Tree di ordine \textit{m} (con m $\geq 3$)} - \textit{ORDINE =  FAN-OUT}\begin{itemize}
+			\item La radice ha \begin{align*}
+				0 \leq &\textit{ nodi figli } \leq m \\
+				1 \leq &\textit{ numero chiavi } \leq m-1
+			\end{align*}
+			\item Ogni nodo interno ha \begin{align*}
+				\lceil m/2 \rceil &\leq \textit{ numero di figli } \leq m \\
+				\lceil m/2 \rceil -1 &\leq \textit{ numero di chiavi } \leq m-1
+			\end{align*}
+			\item Tutte le foglie si trovano allo stesso livello
+		\end{itemize}
 			
+		\paragraph{Inserimento in B-tree}
+		Si verifica se la chiave è presente, altrimenti si scende alla foglia appropriata. Se il nodo non è completo (cioè contiene meno di m-1 chiavi), allora vi si può inserire il record. Se il nodo è completo, si crea un altro nodo (splitting) e si considera il valore mediano tra le chiavi del nodo completo più la chiave da inserire: \begin{enumerate}
+			\item Il valore mediano si inserisce nel nodo padre
+			\item Se il padre è completo si esegue la suddivisione (splitting) del padre (processo ricorsivo)
+		\end{enumerate}
+		
+		\paragraph{Inserimento in nodo saturo}
+		Se il nodo p' è saturo, cioè contiene m-1 chiavi, si esegue lo \textbf{splitting} del nodo:\begin{itemize}
+			\item Si crea un altro nodo p'' in cui si memorizzano le chiavi maggiori della chiave di \textit{valore mediano} (oppure di posto mediano) $k_c$ nella sequenza (considerando chiavi del nodo e chiave da inserire) togliendole dal nodo originario
+			\item La chiave di valore mediano $k_c$ si inserisce nel nodo padre, o meglio si inserisce \begin{align*}
+				... p' (k_c,r_{kc}) p'' ...
+			\end{align*}
+		e se il padre è completo si esegue la suddivisione (splitting) del padre e così via fino alla radice.
+		\end{itemize}
+		
+		\noindent
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/screenshot015}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.48\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{graphics/screenshot016}
+		\end{minipage}
+		
+		\paragraph{Cancellazione da B-tree di chiave K}
+		\begin{enumerate}[start=0]
+			\item La chiave k da cancellare sia nel nodo n
+			\item Se n è una foglia, si cancella k da n e si va al passo 3
+			\item Se n NON è una foglia si sostituisce k prendendo il più piccolo (grande) fra gli elementi maggiori (minori) di k; tale chiave sostitutiva è in una fogli f, per costruzione dell'albero, e quindi le va applicato il punto 1.
+			\item Controllo il numero di chiavi nella foglia: \begin{itemize}
+				\item Se $\lceil m/2 \rceil -1 \leq \textit{ numero chiavi } \leq m-1$ allora fine cancellazione 
+				\item altrimenti bisogna concatenare o bilanciare
+			\end{itemize}
+ 		\end{enumerate}	
 			
+		\begin{figure}[h!]
+			\centering
+			\caption{Cancellazione della chiave 66}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot017}
+		\end{figure}
+		
+		Segue un esempio di cancellazione con concatenazione:
+		
+		\newpage
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot018}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot019}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot020}
+		\end{figure}
+		
+		\newpage
+		\paragraph{Esercizio} \textit{Dato il seguente B-Tree (Fan-Out = 4) eseguire le operazioni indicate mantenendo l'albero bilanciato:} B-Tree di ordine 4 (m = 4), quindi $1 \leq \textit{num Chiavi} \leq 3$.
+		\begin{center}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot021}
+		\end{center}
+		\begin{figure}[h!]
+			\centering
+			\caption{\textbf{Inserimento di k = 48}, inserimento a nodo NON saturo}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot022}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\caption{\textbf{Inserimento di k = 8} (inserimento a nodo saturo) 8 -12 -18 -21 Necessario SPLIT del nodo}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot023}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\caption{Suddivisione dell’informazione 8 – 12 – 18 – 21 in due 8 – 12 e 21 Aggiungiamo 18 al padre, facendo crescere di uno il numero dei puntatori $\to$ SPLIT del padre (18 – 28 – 50 – 71 in 18 – 28 e 71 più 50 nel padre)}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot024}
+		\end{figure}
+		\newpage
+		\begin{figure}[h!]
+			\centering
+			\caption{\textbf{Rimozione di k = 56}}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot025}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\caption{\textbf{Rimozione di k = 28}}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot026}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\caption{Bilanciamento della rimozione}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot027}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\caption{\textbf{Rimozione di k = 12}}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot028}
+		\end{figure}
+		
+		\newpage
+		\begin{figure}[h!]
+			\centering
+			\caption{\textbf{Rimozione di k = 21}}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot029}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+						\caption{\textbf{Rimozione di k = 71}}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot030}
+		\end{figure}
+		
+		\begin{figure}[h!]
+			\centering
+			\caption{Passaggio intermedio}
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot031}
+		\end{figure}
+		
+	\begin{figure}[h!]
+		\centering
+		\caption{Bilanciamento}
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot032}
+	\end{figure}
+		
+		\newpage
+	\subsubsection{B+ Tree}
+	
+	\noindent
+	\begin{minipage}{0.45\linewidth}
+		\begin{itemize}
+			\item Le \textbf{foglie} sono \textbf{collegate in una lista}
+			\item I puntatori ai dati sono \textbf{solo} nelle foglie
+			\item L'inserimento delle chiavi avviene nei nodi foglia
+			\item Ottimi per le ricerche su intervalli
+			\item Molto usati nei DBMS
+		\end{itemize}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{graphics/screenshot033}
+	\end{minipage}
+	
+	\textbf{Organizzazione dei nodi:}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot034}
+	\end{figure}
+	
+	\paragraph{Inserimento di una chiave}
+	Non provoca problemi quando la nuova chiave si può inserire in una \textit{foglia non satura}. Quando la foglia non ha spazio disponibile si esegue lo SPLIT della foglila: \begin{itemize}
+		\item Si suddivide l'informazione presente nella foglia e la nuoa informazione in due (in modo equilibrato) allocando due foglie al posto di una.
+		\item Il valore mediano delle chiavi si \textbf{si inserisce anche in copia nel padre}
+	\end{itemize}
+	Lo SPLIT causa il crescere del numero dei puntatori al livello superiore. Lo SPLIT può dover essere ripetuto sul nodo padre. Lo SPLIT del padre (nodo non foglia) viene gestito come per i BTree:\begin{itemize}
+		\item Si suddivide l'informazione in due, mettendo le chiavi maggiori del valore mediano nel nuovo nodo
+		\item Il valore mediano delle chiavi viene spostato nel padre
+	\end{itemize}
+	
+	\paragraph{Rimozione di una chiave}
+	Se la rimozione della chiave lascia due nodi foglia con spazio inutilizzato da consentire che tutta l'informazione in esse presente possa essere concentrata in una sola foglia si effettua un'operazione di \textbf{merge}, che richiede la modifica della disposizione dei puntatori. \textbf{MERGE} causa il decrescere del numero dei puntatori al livello superiore, e può dover essere ripetuto sul nodo padre.
+		
+	\mybox{\textbf{Bilanciamento:} se le modifiche causano differenze tra le lunghezze dei cammini tra radice e foglie è opportuo ri-bilanciare l'albero.}
+	
+	\newpage
+	\textbf{Esercizio B+Tree - Fan-Out = 4}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot036}
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\caption{\textbf{Inserimento k = 5}}
+		\includegraphics[width=0.6\linewidth]{graphics/screenshot037}
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\caption{\textbf{Rimozione di k = 8}}
+		\includegraphics[width=0.6\linewidth]{graphics/screenshot038}
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\caption{\textbf{Rimozione di k = 20}}
+		\includegraphics[width=0.6\linewidth]{graphics/screenshot039}
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\caption{\textbf{Inserimento di k = 2}. Suddivisione dell’informazione 1 – 2 – 3 – 5 in due 1 – 2 e 3 – 5. Inseriamo 3 anche nel padre, facendo crescere di uno il numero dei puntatori}
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot040}
+	\end{figure}
+	
+	\newpage
+	\begin{figure}[h!]
+		\centering
+		\caption{\textbf{Inserimento di k = 10}}
+		\includegraphics[width=0.6\linewidth]{graphics/screenshot041}
+	\end{figure}
 			
+\textit{	Con l'inserimento di k = 6 abbiamo un inserimento in foglia satura con SPLIT ripetuto sul padre, è quindi necessario fare il primo SPLIT della foglia con 3 - 5 - 6 - 10.}
+	\begin{figure}[h!]
+		\centering
+				\includegraphics[width=0.7\linewidth]{graphics/screenshot042}
+		\caption{Suddivisione dell’informazione 3 – 5 – 6 – 10 in due 3 – 5 e 6 – 10 Inseriamo 6 anche nel padre $\to$ Chiavi nel padre 3 – 6 – 12 – 15 $\to$ SPLIT del padre Il padre non è foglia, quindi lo SPLIT viene gestito come nei B Tree $\to$ 3 – 6 – 12 – 15 in 3 – 6 e 15 e spostiamo 12 nel padre}
+
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\caption{\textbf{Rimozione di k = 2}}
+		\label{fig:screenshot043}
+		\includegraphics[width=0.6\linewidth]{graphics/screenshot043}
+	\end{figure}
+	
 			
-			
-			
-			
+	\begin{figure}[h!]
+		\centering
+		\caption{Fusione}
+		\label{fig:screenshot044}
+		\includegraphics[width=0.6\linewidth]{graphics/screenshot044}
+	\end{figure}
+	
+	\newpage
+	\paragraph{Esercizio costruzione B+Tree}
+	Data la seguente lisa di valori chiave $L = (1,6,2,9,4,7,11,8,13)$:\begin{enumerate}
+		\item Costruire un possibile B+Tree (fan-out = 4) che contenga i seguenti nodi foglia: $(1,2,4),(6,7),(8,9),(11,13)$
+		\item Mostrare l'albero dopo l'inserimento del valore chiave 3
+	\end{enumerate}
+	
+	\begin{figure}[h!]
+		\centering
+
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot045}
+				\caption{N.B. non rappresentiamo i collegamenti tra le foglie}
+	\end{figure}
+	
+	Per l'inserimento di k = 3 è necessario lo SPLIT della foglia e del suo nodo padre.
+	\begin{figure}[h!]
+		\centering
+		\caption{\textbf{Insermento di k = 3} Suddivisione dell’informazione della foglia 1 – 2 – 3 – 4 in due 1 – 2 e 3 – 4 Aggiungiamo 3 al padre, facendo crescere di uno il numero dei puntatori $\to$ SPLIT del padre (nodo non foglia) $\to$ 3 – 6 – 8 – 11 in due 3 – 6 e 11 e spostiamo 8 nel padre}
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot046}
+	\end{figure}
+	
+	\paragraph{Esercizio 2 da risolvere:} 
+	Data la seguente lista di valori chiave $L = (1,2,4,7,10,11,15,16,19,20)$
+	\begin{enumerate}
+		\item Costruire un possibile B+Tree con fan-out = 4 che contenga i seguenti nodi foglia: $(1,2,4),(7,10),(11,15),(16,19,20)$
+		\item Mostrare l'albero dopo l rimozione del valore chiave \textit{2}
+		\item Mostrare l'albero dopo l'inserimento del valore chiave 18.
+	\end{enumerate}
 			
 			
 			
