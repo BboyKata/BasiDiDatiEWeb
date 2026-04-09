@@ -841,7 +841,27 @@
 		 \subsubsection{Il log}
 		 \textit{Domanda d'esame: cos'è il log e cosa vi è contenuto dentro?}
 		 
+		 Il log è un file sequenziale gestito dal gestore dell'affidabilità, scritto in memoria stabile. Permette di ricostruire il contenuto della BD a seguito di guasti. "Diario di bordo": riporta tutte le operazioni in ordine.
 		 
+		  Record nel log: \begin{itemize}
+		  	\item \textbf{Operazioni delle transazioni:} Registrano le attività svolte da ciascuna transazione nell’ordine in cui vengono	effettuate.\sitemize{
+		  	\item \emph{begin, B(T)}
+		  	\item \emph{insert, I(T,O,AS)}
+		  	\item \emph{delete, D(T,O,BS)}
+		  	\item \emph{update, U(T,O,BS,AS)}
+		  	\item \emph{commit, C(T), abort, A(T)}
+		  	}
+		  	
+		  	Dove
+		  	
+		  	\mybox{\sitemize{\item T = id della transazione
+		  			\item O = id oggetto coinvolto
+		  			\item AS = valore dell’oggetto dopo (AFTER) la modifica
+		  			\item BS = valore dell’oggetti prima
+		  			(BEFORE) della modifica}}
+		  	
+		  	\item \textbf{Record di sistema:} Indicano l’effettuazione di operazioni specifiche del gestore dell’affidabilità
+		  \end{itemize}
 			
 			
 			
