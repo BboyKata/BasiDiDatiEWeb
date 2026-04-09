@@ -42,4 +42,12 @@
 \contentsline {paragraph}{Rimozione di una chiave}{18}{section*.47}%
 \contentsline {paragraph}{Esercizio costruzione B+Tree}{21}{section*.57}%
 \contentsline {paragraph}{Esercizio 2 da risolvere:}{21}{section*.60}%
-\contentsline {section}{\numberline {3}Possibili domande d'esame}{22}{section.3}%
+\contentsline {section}{\numberline {3}Gestione delle transazioni}{22}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Proprietà ACID delle transazioni}{22}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Atomicità}{22}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Consistenza}{23}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Isolamento}{23}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {3.1.4}Durabilità (persistenza)}{23}{subsubsection.3.1.4}%
+\contentsline {subsection}{\numberline {3.2}Gestore delle transazioni}{23}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Gestore dell'affidabilità}{24}{subsubsection.3.2.1}%
+\contentsline {section}{\numberline {4}Possibili domande d'esame}{25}{section.4}%

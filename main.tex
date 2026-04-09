@@ -745,11 +745,103 @@
 		\item Mostrare l'albero dopo l rimozione del valore chiave \textit{2}
 		\item Mostrare l'albero dopo l'inserimento del valore chiave 18.
 	\end{enumerate}
+	\newpage
+	\section{Gestione delle transazioni}	
+	Riguardano aspetti tecnologici che caratterizzano il funzionamento dei DBMS riguardo la modalità con cui viene garantita la possibilità di conservare a lungo
+	termine e in modo corretto il contenuto delle BD anche in presenza malfunzionamenti e guasti e di accessi concorrenti.
+	
+	\mybox{\textbf{Transazione:} Identifica una unità di lavoro elementare svolta da	un'applicazione.
+		
+	Caratteristiche di: \begin{itemize}
+		\item \textbf{Correttezza}: La correttezza garantisce che il database passi da uno stato consistente a un altro stato consistente, rispettando tutti i vincoli di integrità (chiavi, vincoli di dominio, ecc.).
+		\item \textbf{Robustezza}: La robustezza riguarda la capacità del sistema di mantenere le modifiche apportate dalle transazioni confermate (commit), anche in presenza di guasti hardware o software (es. blackout).
+		\item \textbf{Isolamento}:L'isolamento assicura che transazioni concorrenti (eseguite contemporaneamente da più utenti) non interferiscano tra loro, comportandosi come se venissero eseguite in modo sequenziale.
+	\end{itemize}
+	
+	Caratterizzata da:\begin{itemize}
+		\item \textbf{Inizio} \emph{begin-transaction / start transaction}
+		\item \textbf{Fine} \emph{end-transaction}
+		
+	\end{itemize}
+	
+	al cui interno deve essere eseguito una e una sola volta uno dei seguenti comandi: \begin{itemize}
+		\item \emph{commit work}: per terminare correttamente.
+		\item \emph{rollback work}: per abortire la transazione.
+	\end{itemize} 
+		}
 			
-			
-			
-			
-			
+		Un sistema transazionale (On-Line Transaction Processing) è in grado di definire ed eseguire transazioni per conto di un certo numero di applicazioni concorrenti.
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.5\linewidth]{graphics/screenshot047}
+			\caption{Esempio di transazione con varie decisioni}
+		\end{figure}
+		\subsection{Proprietà ACID delle transazioni}
+		Il codice che viene eseguito all’interno di una transazione gode di proprietà dette \textbf{ACIDE}.
+		\subsubsection{Atomicità}
+		Una transazione è un'unità atomica (indivisibile) di elaborazione: o vengono resi visibili tutti gli effetti di una transazione oppure la transazione non deve avere alcun effetto. $\to$ \textbf{Approccio TUTTO o NIENTE}. Non può lasciare la base di dati in uno stato intermedio:\begin{itemize}
+			\item un guasto o un errore \textit{prima del commit} debbono causare	l'annullamento (\textbf{UNDO}) delle operazioni svolte.
+			\item un guasto o errore dopo il commit non deve avere conseguenze, se necessario vanno ripetute (\textbf{REDO}) le operazioni.
+		\end{itemize}
+		Esito:\begin{itemize}
+			\item \textbf{Commit} =  caso normale e più frequente.
+			\item \textbf{Abort o rollback}: può essere richiesto dall'applicazione (suicidio) o può essere richiesto dal sistema per violazione dei vincoli, concorrenza, incertezza in caso di fallimento (omicidio).
+		\end{itemize}
+		\subsubsection{Consistenza}
+		La consistenza richiede che l’esecuzione della transazione non violi i vincoli di integrità definiti sulla BD.  Quando il sistema rileva che una transazione sta violando uno dei vincoli (es. inserimento di tupla con chiave già presente) il sistema interviene per annullare la transazione o correggere la
+		violazione del vincolo.
+		La verifica dei vincoli di integrità può essere
+		\begin{itemize}
+			\item Immediata (nel corso della transazione)
+			\item Differita (alla conclusione della transazione)
+		\end{itemize}
+		La consistenza garantisce che se lo stato iniziale è corretto anche lo stato finale è corretto,
+		\subsubsection{Isolamento}
+		L’isolamento richiede che l’esecuzione di una transazione sia indipendente dall’esecuzione contemporanea di altre transazioni. La transazione non risente degli effetti delle altre transazioni concorrenti: l'esecuzione concorrente di una collezione di transazioni deve \textbf{produrre un risultato che si potrebbe ottenere con una esecuzione sequenziale}.
+		
+		\textbf{Conseguenza:} Una transazione non espone i suoi stati intermedi. Si evita l' "effetto domino".
+		
+		\subsubsection{Durabilità (persistenza)}
+		Gli effetti di una transazione andata in commit non	vanno perduti ("durano per sempre"), anche in	presenza di guasti. (Commit significa impegno). Un DBMS deve garantire che nessun dato venga perso per nessun motivo.
+		
+		\subsection{Gestore delle transazioni}
+		Per ciascuna delle proprietà sopra elencate, vi sono dei moduli che verificano che siano applicate: \begin{itemize}
+			\item \textbf{Atomicità e durabilità}: Gestore dell'affidabilità (Reliability manager)
+			\item \textbf{Isolamento}: Gestore della concorrenza
+			\item \textbf{Consistenza}: La CONSISTENZA è gestita dai compilatori del DDL che introducono controlli sui dati e procedure di verifica eseguite dalle transazioni.
+		\end{itemize}
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.6\linewidth]{graphics/screenshot048}
+		\end{figure}
+		
+		\textit{Domanda d'esame: come gestisce il DBMS le transazioni?}
+		
+		\subsubsection{Gestore dell'affidabilità}
+		Assicura\textbf{ atomicità e durabilità} (persistenza). Gestisce l'esecuzione dei comandi transazionali: \emph{start transaction (B, begin), commit work (C), rollback work (A, abort)} 
+		 e le operazioni di ripristino (recovery) dopo i guasti: \emph{ripresa a caldo e ripresa a freddo (warm restart e cold restart)}.		 
+		 Usa il log: un archivio permanente che registra le operazioni svolte dal DBMS. Ogni azione di scrittura sulla BD viene protetta tramite una azione sul	LOG.
+		 
+		 \begin{figure}[h!]
+		 	\centering
+		 	\includegraphics[width=0.7\linewidth]{graphics/screenshot049}
+		 	\caption{Architettura del gestore dell'affidabilità}
+		 \end{figure}
+		 
+		 Il gestore dell’affidabilità deve disporre di \textbf{MEMORIA STABILE} cioè di memoria che risulti resistente ai guasti:
+		\begin{itemize}
+			\item Memoria centrale: non è persistente
+			\item Memoria di massa: è persistente ma può danneggiarsi
+			\item Memoria stabile: memoria che non può danneggiarsi
+		\end{itemize}
+		 è una \textbf{astrazione}, nessuna memoria può avere probabilità nulla di fallimento, viene perseguita attraverso la \textit{ridondanza:} dischi replicati, nastri, ...
+		  Un guasto della memoria stabile è considerato catastrofico
+		  
+		 \subsubsection{Il log}
+		 \textit{Domanda d'esame: cos'è il log e cosa vi è contenuto dentro?}
+		 
+		 
 			
 			
 			
