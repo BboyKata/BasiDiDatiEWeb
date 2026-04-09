@@ -51,4 +51,9 @@
 \contentsline {subsection}{\numberline {3.2}Gestore delle transazioni}{23}{subsection.3.2}%
 \contentsline {subsubsection}{\numberline {3.2.1}Gestore dell'affidabilità}{24}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}Il log}{24}{subsubsection.3.2.2}%
-\contentsline {section}{\numberline {4}Possibili domande d'esame}{26}{section.4}%
+\contentsline {subsubsection}{\numberline {3.2.3}UNDO e REDO}{25}{subsubsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.4}Checkpoint}{25}{subsubsection.3.2.4}%
+\contentsline {subsubsection}{\numberline {3.2.5}Dump}{26}{subsubsection.3.2.5}%
+\contentsline {subsubsection}{\numberline {3.2.6}Esito di una transazione}{26}{subsubsection.3.2.6}%
+\contentsline {subsubsection}{\numberline {3.2.7}Regole fondamentali per il log}{26}{subsubsection.3.2.7}%
+\contentsline {section}{\numberline {4}Possibili domande d'esame}{27}{section.4}%

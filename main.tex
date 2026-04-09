@@ -866,6 +866,75 @@
 		  \end{itemize}
 		
 		Il log serve "a ricostruire" le operazioni: checkpoint e dump servono ad evitare che la ricostruzione debba partire dall'inizio dei tempi si usano con riferimento a tipi di guasti diversi.
+		
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\linewidth]{graphics/screenshot050}
+		\end{figure}
+		
+		\subsubsection{UNDO e REDO}
+		Operazioni specifiche per disfare e rifare le operazioni
+		sulla BD, sono di competenza del gestore dell’affidabilità.
+		\begin{itemize}
+			\item \textbf{UNDO} di una azione su un \textbf{oggetto O}:\sitemize{\item \emph{Update, Delete}: ricopiare il valore del \textbf{before state (BS)} nell'oggetto O
+			\item \emph{Insert:} eliminare O}
+			\item \textbf{REDO} di una azione su un \textbf{oggetto O}:\sitemize{\item \emph{Update, Delete:} Ricopiare il valore dell'after state (AS) nell'oggetto O \item \emph{Delete:} Eliminare O}			
+		\end{itemize}
+		\textbf{Idempotenza di Undo e Redo:}\begin{itemize}
+				\item \emph{undo(undo(A)) = undo(A)} 
+				
+				\item \emph{redo(redo(A)) = redo(A)}
+			\end{itemize}
+		
+		L’effettuazione di un numero arbitrario di UNDO e REDO della stessa azione equivale allo svolgimenti di tale azione una sola volta. Questa proprietà è utile nel caso in cui si abbiano
+		errori durante le operazioni di ripristino e sia necessario ripetere UNDO e REDO.
+		
+		\subsubsection{Checkpoint}
+		Operazione che serve a "fare il punto" della situazione, semplificando le successive operazioni di ripristino: ha lo scopo di registrare quali transazioni sono attive in un certo istante e dualmente di confermare che le altre o non sono iniziate o sono finite. Vi sono varie modalità, vediamo la più semplice: \begin{itemize}
+			\item Si sospende l'accettazione di richieste di ogni tipo (scrittura,	inserimenti, ..., commit, abort)
+			\item Si trasferiscono in memoria di massa (tramite force) tutte le pagine sporche relative a transazioni andate in commit
+			\item Si registrano sul log in modo sincrono (force) gli identificatori delle transazioni in corso
+			\item Si riprende l'accettazione delle operazioni
+		\end{itemize}
+		Così siamo sicuri che \begin{itemize}
+			\item  Per tutte le transazioni che hanno effettuato il commit i dati sono in memoria di massa, quindi registrate nella BD in modo permanente
+			\item Le transazioni "a metà strada" (non hanno ancora fatto
+			COMMIT o ABORT) sono elencate nel checkpoint
+		\end{itemize}
+		
+		\subsubsection{Dump}
+		Copia completa ("di riserva", backup) della base di dati
+		\begin{itemize}
+			\item Solitamente prodotta mentre il sistema non è operativo
+			\item Salvato in memoria stabile (es. Su nastro)
+			\item Un record di dump nel log indica il momento in cui il log è stato effettuato (e dettagli pratici, file, dispositivo, ...)
+		\end{itemize}
+		
+		\subsubsection{Esito di una transazione}
+		L'esito di una transazione è determinato \underline{irrevocabilmente} quando viene scritto il \textbf{record di commit nel log in modo sincrono}, con una \textbf{force}. Un guasto prima di tale istante porta ad un UNDO di tutte le
+		azioni, per ricostruire lo stato originario della base di dati. Un guasto successivo non deve avere conseguenze: lo stato finale della base di dati deve essere ricostruito, con redo se
+		necessario. Record di abort possono essere scritti in modo	asincrono.
+		
+		\subsubsection{Regole fondamentali per il log}
+		Durante il funzionamento normale delle transazioni
+		il gestore dell’affidabilità deve garantire che siano
+		seguite due regole; le regole definiscono i requisiti minimi che consentono di ripristinare la correttezza della BD a fronte di guasti:
+		\begin{itemize}
+			\item \textbf{Write-Ahead-Log (WAL):} \textit{Si scrive il giornale (parte before) prima del database. }
+			
+			Impone che la parte BEFORE STATE dei record di un Log venga scritta nel Log PRIMA di effettuare la corrispondente operazione sulla BD. Consente di disfare le scritture già effettuate in memoria di massa da parte di	una transazione che non ha ancora effettuato un COMMIT. Per ogni aggiornamento viene reso disponibile in modo affidabile il valore precedente la scrittura.
+			
+			\textit{Versione semplificata:} Scrivere prima record di Log e poi nel DB, scrivi il Log per primo.
+			
+			\item \textbf{Commit-Precedenza:} Si scrive il giornale (parte after) prima del commit.
+			
+			Impone che la parte AFTER STATE dei record di un Log venga scritta	nel Log PRIMA di effettuare il COMMIT. Consente di rifare le scritture già decise da una transazione che ha effettuato il COMMIT ma le cui pagine modificate non sono ancora state trascritte dal	\textit{Buffer Manager} in memoria di massa.
+			
+			\textit{Versione semplificata:} Record di Log scritti prima del COMMIT.
+		\end{itemize}
+		
+		%% MI fermo a slide 17 per il momento
+		
 			
 			
 			
