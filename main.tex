@@ -860,9 +860,12 @@
 		  			\item BS = valore dell’oggetti prima
 		  			(BEFORE) della modifica}}
 		  	
-		  	\item \textbf{Record di sistema:} Indicano l’effettuazione di operazioni specifiche del gestore dell’affidabilità
+		  	\item \textbf{Record di sistema:} Indicano l’effettuazione di operazioni specifiche del gestore dell’affidabilità:
+		  	\sitemize{\item \emph{dump}: Copia completa e consistente della BD (effettuata quando il sistema non è operativo) = BACKUP
+		  	\item \emph{checkpoint}: Operazione che viene svolta periodicamente ed ha l’obiettivo di registrare quali transazione sono attive}
 		  \end{itemize}
-			
+		
+		Il log serve "a ricostruire" le operazioni: checkpoint e dump servono ad evitare che la ricostruzione debba partire dall'inizio dei tempi si usano con riferimento a tipi di guasti diversi.
 			
 			
 			

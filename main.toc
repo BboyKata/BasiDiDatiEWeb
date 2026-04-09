@@ -51,4 +51,4 @@
 \contentsline {subsection}{\numberline {3.2}Gestore delle transazioni}{23}{subsection.3.2}%
 \contentsline {subsubsection}{\numberline {3.2.1}Gestore dell'affidabilità}{24}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}Il log}{24}{subsubsection.3.2.2}%
-\contentsline {section}{\numberline {4}Possibili domande d'esame}{25}{section.4}%
+\contentsline {section}{\numberline {4}Possibili domande d'esame}{26}{section.4}%
