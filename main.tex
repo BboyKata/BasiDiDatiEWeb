@@ -926,15 +926,129 @@
 			
 			\textit{Versione semplificata:} Scrivere prima record di Log e poi nel DB, scrivi il Log per primo.
 			
+			Scrive prima il record di Log e poi il record nella BD. Al COMMIT tutte le pagine della BD modificate dalla transazione sono scritte in memoria di massa. \textbf{Non richiede REDO}.
+			
+			Tecnica di aggiornamento immediato, permette comunque il recovery: se una transazione fallisce prima del COMMIT \textbf{l’effetto di eventuali	operazioni effettuate deve essere annullato}.
+			
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=0.7\linewidth]{graphics/screenshot051}
+			\end{figure}
+		
+			
+			
 			\item \textbf{Commit-Precedenza:} Si scrive il giornale (parte after) prima del commit.
 			
 			Impone che la parte AFTER STATE dei record di un Log venga scritta	nel Log PRIMA di effettuare il COMMIT. Consente di rifare le scritture già decise da una transazione che ha effettuato il COMMIT ma le cui pagine modificate non sono ancora state trascritte dal	\textit{Buffer Manager} in memoria di massa.
 			
 			\textit{Versione semplificata:} Record di Log scritti prima del COMMIT.
+			
+			 La scrittura dei record di Log precede le azioni sulla BD. Le azioni sulla BD avvengono dopo il COMMIT e la scrittura del record di COMMIT nel Log. \textbf{Non richiede UNDO}
+			 Tecnica di aggiornamento differito: i dati non sono fisicamente aggiornati fino all’esecuzione del COMMIT. \textbf{Se la transazione fallisce non è necessario l’UNDO}.
+			
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=0.7\linewidth]{graphics/screenshot052}
+			\end{figure}
+			
+			\item Più generale e comunemente utilizzato è un \textbf{compromesso} tra le due regole sopra scritte: Le scritture sulla BD, una volta protette dalle opportune scritture sul Log, possono avvenire in un qualunque momento rispetto alla scrittura del record di COMMIT nel Log. Consente al Buffer manager di ottimizzare le operazioni.
+			
+			\textbf{Richiede sia UNDO che REDO.}
+			
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[width=0.7\linewidth]{graphics/screenshot053}
+			\end{figure}
+			
+			
 		\end{itemize}
 		
-		%% MI fermo a slide 17 per il momento
-		
+	\section{Gestione dei guasti}
+	I guasti possono essere classificati in: \begin{itemize}
+		\item \textbf{Guasti di Sistema (Guasti "soft")}: Errori di programma, crash di sistema, caduta di tensione. Si perde la memoria centrale (buffer), ma \textit{non si perde la memoria secondaria} (BD e Log). Richiede la \textbf{ripresa a caldo (warm restart)}.
+		\item \textbf{Guasti di Dispositivo (Guasti "hard")}: Guasti sui dispositivi di memoria secondaria, si perde anche la memoria secondaria (BD), ma \textit{non si perde la memoria stabile }(e quindi il log). Richiede la \textbf{ripresa a freddo (cold restart)}.
+	\end{itemize}
+	
+	Quando il Sistema individua un guasto (sia di Sistema che di dispositivo) immediatamente \textbf{forza un arresto }completo delle transazioni, e il successivo ripristino del corretto funzionamento del Sistema Operativo (\textbf{Boot}). Quindi viene attivata una procedura di ripresa \textit{A CALDO }se il guasto è di sistema, \textit{A FREDDO }se il guasto è di dispositivo. Al termine della procedura di ripresa, il sistema è
+	di nuovo utilizzabile. Questo viene chiamato \textbf{Modello "fail-stop"}.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot054}
+	\end{figure}
+	
+\textbf{Obiettivi della procedura di ripresa}: Classificare le transazioni in \begin{itemize}
+	\item \textbf{Completate} (tutti i dati in memoria stabile)
+	\item \textbf{In commit} ma non necessariamente completate: Può servire REDO per rifare le azioni e garantire la consistenza
+	\item\textbf{ Senza commit:} Vanno annullate con UNDO per lasciare la BD nel suo stato iniziale precedente alla esecuzione della transazione
+\end{itemize}
+Quest'ultime due sono transazioni potenzialmente attive: si classificano in base alla informazione presente nel Log.
+
+\subsection{Ripresa a caldo}
+ Garantisce l’atomicità e la persistenza delle transazioni.\begin{itemize}
+ 	\item  \textbf{Atomicità}: viene garantito che le transazioni in corso al momento del guasto lascino la BD nello stato iniziale o nello stato finale. \item \textbf{Persistenza}: per le transazioni completate ma non ancora trascritte in memoria di massa si prevede la scritture in memoria di massa
+ \end{itemize}
+ 
+ È divisa in quattro fasi:\begin{enumerate}
+ 	\item Trovare l'ultimo \textbf{CHECKPOINT} (ripercorrendo il Log
+ 	a ritroso)
+ 	\item \textbf{Costruire gli insiemi UNDO (transazioni da disfare) e REDO (transazioni da rifare)}
+ 	
+ 	Si inizializza l’insieme \textbf{UNDO} (transazioni da disfare) con le \textbf{transazioni attive al CHECKPOINT}. Si inizializza l’insieme REDO (transazioni da rifare)	con l’insieme vuoto. Si percorrere il log in avanti
+ 	\sitemize{\item aggiungendo ad \textbf{UNDO}\textbf{ tutte le transazioni per cui è
+ 		presente un record di BEGIN}
+ 		\item e \textbf{spostando da UNDO a REDO le transazioni per cui è
+ 		presente il record di COMMIT}}
+ 	
+ 	\item Ripercorrere il log all'indietro, fino alla più vecchia azione delle transazioni in UNDO e REDO,	disfacendo tutte le azioni delle transazioni in UNDO – Questa azione potrebbe precedere il record di
+ 	CHECKPOINT
+ 	\item Ripercorrere il log in avanti, rifacendo tutte le azioni
+ 	delle transazioni in REDO, nell’ordine in cui sono 	presenti nel Log
+ \end{enumerate}
+ 
+ \textbf{Esempio di ripresa a caldo:}
+ \begin{figure}[h!]
+ 	\centering
+ 	\includegraphics[width=0.7\linewidth]{graphics/screenshot055}
+ \end{figure}
+ 
+ \newpage
+ \noindent
+ \begin{minipage}{0.48\linewidth}
+ 	\centering
+ 	\includegraphics[width=\linewidth]{graphics/screenshot056}
+ \end{minipage}
+ \hfill
+  \begin{minipage}{0.48\linewidth}
+ 	\centering
+ 	\includegraphics[width=\linewidth]{graphics/screenshot057}
+ \end{minipage}
+
+  \begin{minipage}{0.48\linewidth}
+ 	\centering
+ 	\includegraphics[width=\linewidth]{graphics/screenshot058}
+ \end{minipage}
+ \hfill
+ \begin{minipage}{0.48\linewidth}
+ 	\centering
+ 	\includegraphics[width=\linewidth]{graphics/screenshot059}
+ \end{minipage}
+
+\subsection{Ripresa a freddo}
+La ripresa a freddo risponde ad un guasto che provoca il deterioramento di una parte della BD. È articolato in 3 fasi: \begin{itemize}
+	\item  Si ripristinano i dati a partire dal backup (DUMP): Si accede al più recente record di DUMP nel Log
+	\item Si \textbf{eseguono le operazioni registrate} sul Log fino all'istante del
+	guasto: si ripercorre in avanti il Log, si eseguono sia le azioni sulla BD che le azioni di COMMIT e ABORT, riportandosi nella situazione precedente
+	\item Si esegue una \textbf{ripresa a caldo}
+\end{itemize}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot060}
+\end{figure}
+
+\textit{Domanda d'esame: si enunci la differenza fra la ripresa a caldo e la ripresa a freddo.}
+ 
+
 			
 			
 			

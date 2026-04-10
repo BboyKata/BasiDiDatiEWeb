@@ -56,4 +56,7 @@
 \contentsline {subsubsection}{\numberline {3.2.5}Dump}{26}{subsubsection.3.2.5}%
 \contentsline {subsubsection}{\numberline {3.2.6}Esito di una transazione}{26}{subsubsection.3.2.6}%
 \contentsline {subsubsection}{\numberline {3.2.7}Regole fondamentali per il log}{26}{subsubsection.3.2.7}%
-\contentsline {section}{\numberline {4}Possibili domande d'esame}{27}{section.4}%
+\contentsline {section}{\numberline {4}Gestione dei guasti}{27}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ripresa a caldo}{28}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Ripresa a freddo}{29}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Possibili domande d'esame}{30}{section.5}%
