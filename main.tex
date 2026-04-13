@@ -1049,13 +1049,209 @@ La ripresa a freddo risponde ad un guasto che provoca il deterioramento di una p
 \textit{Domanda d'esame: si enunci la differenza fra la ripresa a caldo e la ripresa a freddo.}
  
 
+\section{Gestore della concorrenza}
+Un DBMS spesso deve servire diverse applicazioni e rispondere alle richieste di diversi utenti. Il numero di transazioni è molto elevato, quindi è indispensabile che le transazioni di un DBMS vengano eseguite CONCORRENTEMENTE, la loro esecuzione SERIALE è impensabile.			
+			
+In gestore della concorrenza riceve le richieste di accesso ai dati e decide se autorizzarle o meno, eventualmente riordinandole. Il gestore della concorrenza stabilisce quindi
+l’ordine degli accessi chiamato \textbf{SCHEDULER}			
 			
 			
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot061}
+\end{figure}
+
+Decine o centinaia di transazioni al secondo (Transactio Per Second - TPS \textbf{non possono essere seriali}. I TPS sono l'unità di misura utilizzata per caratterizzare il carico applicativo di un DBMS. 
+
+\textit{Domanda d'esame: si descrivano brevemente le anomalie delle transazioni concorrenti}
+
+\subsection{Anomalie delle transazioni concorrenti}			
+L’esecuzione concorrente delle transazioni può causare problemi di correttezza. 
+\subsubsection{Perdita di aggiornamento}
+Due transazioni identiche che operano sullo stesso oggetto x della BD:
+\begin{itemize}
+	\item $t_1: r_1(x),x = x+1, w_1(x)$ dove $r_1(x) \to$ lettura dell'oggetto x da parte della transazione $t_1$ e $w_1(x)\to$ lettura dell'oggetto x da parte della transazione $t_1$
+	\item $t_2:r_2(x),x = x+1,w_2(x)$
+\end{itemize}
+Se ad esempio, inizialmente $x=2$, dopo una esecuzione seriale x = 4. 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot063}
+\end{figure}
+Viceversa, per una esecuzione concorrente un aggiornamento viene perso, poiché alla fine di questa esecuzione $x=3$: entrambe le transazioni leggono 2 come valore iniziale di x, gli effetti della transazione $t_2$ (la prima che scrive il nuovo valore di x) vengono persi.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\linewidth]{graphics/screenshot064}
+\end{figure}
+
+\newpage
+\subsubsection{Lettura sporca}
+\textbf{Aspetto critico:} una transazione legge uno stato intermedio (sporco) e lo può comunicare all'esterno.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot065}
+\end{figure}
+
+L'unico modo per ripristinare la correttezza a seguito dell'ABORT di $t_1$ sarebbe di \textbf{imporre l'ABORT} di $t_2$ e ricorsivamente di tutte le transazioni che avessero letto dati modificati da $t_2$, con un \textit{effetto domino}; è una soluzione costosa da gestire e talvolta impraticabile, ad esempio se $t_2$ avesse comunicato il dato all'esterno. Quindi \textbf{le transazioni non devono esporre dati intermedi.}
+
+\subsubsection{Letture inconsistenti}
+La transazione legge valori diversi per lo stesso oggetto x senza modificarlo. Sarebbe opportuno che una transazione che accede due volte alla BD trovi esattamente lo stesso valore per ciascun dato letto.\textbf{ La transazione non deve risentire dell’effetto di altre transazioni}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot066}
+\end{figure}
+\subsubsection{Aggiornamento fantasma}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot067}
+\end{figure}
+
+\subsection{Controllo di Concorrenza}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot068}
+\end{figure}
+
+La garanzia dell’isolamento (quindi anche di non esporre stati intermedi) è molto onerosa. I DBMS prevedono la possibilità di specificare un grado di protezione ridotto: Alcune anomalie vengono evitate, altre anomalie possono manifestarsi. Si può rinunciare ad un controllo di concorrenza stringente per migliorare le prestazioni.
+
+\paragraph{Modello formale di transazione} una transazione è definita come una \textbf{sequenza di azioni} di \textbf{lettura e scrittura:} $t_1 = r_1(x),r_1(y),w_1(x),w_1(y)$. Ogni transazione è un oggetto sintattico di cui si conoscono soltanto le operazioni di ingresso e uscita. Le operazioni nello schedule compaiono seguendo
+l’ordine temporale con cui sono eseguite sulla BD. Il controllo di concorrenza ha la funzione di accettare alcuni schedule e di rifiutarne altri.
+
+\subsubsection{Soluzioni iniziali NON applicabili}
+Ipotesi semplificativa: inizialmente assumeremo di sapere l’esito (COMMIT/ABORT) delle
+transazioni che appaiono in uno schedule. Potremo ignorare le transazioni che producono un ABORT, togliendo dallo schedule tutte le loro operazioni e ci concentreremo solo sulle transazioni che producono un COMMIT. In questo caso lo schedule si dice una
+\textbf{commit-proiezione}. Questa assunzione permette uno studio teorico, ma non è accettabile in pratica. Lo schedule va accettato o rifiutato senza conoscere l’esito finale delle transazioni coinvolte.
+
+\textbf{Idea base:} individuare classi di schedule serializzabili che siano sottoclassi
+degli schedule possibili, siano serializzabili e la cui proprietà di serializzabilità sia verificabile a costo basso.
+
+\paragraph{View-Equivalenza}Nozione di equivalenza concettualmente interessante,
+ma inutilizzabile in pratica per ragioni computazionali. \begin{itemize}
+	\item \textbf{LEGGE DA:} $r_i(x)$ \textbf{legge-da} $w_j(x)$ in uno schedule S, se $w_j(x)$ precede $r_i(x)$ in S e non c'è $w_k(x)$ fra $r_i(x)$ e $w_j(x)$ in S.
+	\item \textbf{SCRITTUA FINALE:} $w_i(x)$ in uno schedule S è \textbf{scrittura finale} se è l'ultima scrittura dell'oggetto x in S.
+\end{itemize}
+
+Due schedule sono \textbf{view-equialenti} $S_i \approx_V S_j$  se hanno la \textbf{stessa relazione legge-da e le stesse scritture finali.}
+\paragraph{View Serializzabilità} Uno schedule è view-serializzabile se esiste uno
+schedule seriale view-equivalente ad esso. L'insieme degli schedule view-serializzabili è indicato con \textbf{VSR}.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot069}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot070}
+\end{figure}
+
+Determinare la view-equivalenza di due schedule è un problema con complessità lineare. Determinare se uno schedule è view-equivalente ad un qualsiasi schedule seriale è un problema
+NP-difficile. Il concetto di view-equivalenza non è utilizzabile in pratica per caratterizzare la serializzabilità/.Si preferisce definire una condizione di equivalenza più ristretta, che non copra tutti i casi di equivalenza tra schedule, ma sia utilizzabile nella pratica perché ha una complessità inferiore.
+
+\paragraph{Conflict Equivalenza}
+Nozione di equivalenza più facilmente utilizzabile, si basa sul concetto di \textbf{conflitto}. Definizione preliminare:\begin{itemize}
+	\item Un'azione $a_i$ è in \textbf{conflitto} con $a_j$ $(i\neq j)$, se operano sullo stesso oggetto e almeno una di esse è in scrittura. Due casi: conflitto \textbf{read-write} (rw o  wr) o conflitto \textbf{write-write} (ww) 
+\end{itemize}
+
+Due schedule sono \textbf{conflict equivalenti} $S_i \approx_c S_j$ se presentano le \textbf{stesse operazioni} e \textbf{ogni coppia di operazioni in conflitto compare nello stesso ordine in entrambi.}
+
+\paragraph{Conflict serializzabilità}
+Uno schedule è \textbf{conflict-serializzabile} se è conflict-equivalente ad un qualche schedule seriale. L'insieme degli schedule conflict-serializzabili è indicato con \textbf{CSR}.
+
+\newpage
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot071}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot072}
+\end{figure}
+
+La classe degli schedule CSR (conflict-serializzabili) è
+strettamente inclusa in quella degli schedule VSR
+(view-serializzabili)
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.4\linewidth]{graphics/screenshot073}
+\end{figure}
+
+Anche la conflict-serializzabilità, pur più rapidamente verificabile è inutilizzabile in pratica: l'algoritmo, con opportune strutture dati richiede tempo lineare, però la conflict-serializzabilità risulta ancora eccessivamente onerosa in pratica. La tecnica sarebbe efficiente se potessimo conoscere il grafo dall’inizio, ma così non è: non è praticabile mantenere il grafo, aggiornarlo e verificarne l’aciclicità ad ogni richiesta di operazione.
 			
+\subsubsection{Soluzioni utilizzate in pratica: LOCKING}
+Il meccanismo più noto e il primo usato dai DBMS si basa sul \textbf{LOCKING}. In questa soluzione tutte le operazioni di lettura e scrittura devono essere protette da opportune primitive:\begin{itemize}
+	\item Tutte le letture sono precedute da \textbf{r\_lock} (lock condiviso) e seguite da \textbf{unlock}. Su un dato possono essere attivi più lock di questo tipo.
+	\item Tutte le scritture sono precedute da \textbf{w\_lock} (lock esclusivo) e seguite da \textbf{unlock}. Non può coesistere con altri lock sullo stesso dato.
+\end{itemize}
+
+Quando una transazione segue queste regole si dice \textbf{ben formata rispetto ai lock}.
+	
+Quando una trasnazione prima legge e poi scrive un oggetto, può richiedere subito un lock esclusivo o chiedere prima un lock condiviso e poi uno esclusivo (lock escalation). Il gestore della concorrenza riceve le richieste di lock provenienti dalle transazioni e le gestisce sulla base della \textbf{tavola dei conflitti.}	
+
+Se la risorsa non è concessa, la transazione richiedente è posta in attesa (eventualmente in coda), fino a quando la risorsa non diventa disponibile. Il \textbf{lock manager} gestisce una tabella dei lock, per ricordare la situazione dei lock già concessi.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{graphics/screenshot074}
+\end{figure}
+
+\subsubsection{Meccanismi di locking}
+I meccanismi di lockig possono essere usati per garantire le transazioni che lavorano sulla BD accedano ai dati in \textbf{mutua esclusione}. Per avere la garanzia che le transazioni seguano uno schedule serializzabile è necessario porre una restrizione sull'ordinamento delle richieste di lock.
+
+\paragraph{Principio di Locking a 2 Fasi - 2PL} Usato da quasi tutti i sistemi, garantisce "a priori" la conflict-serializzabilità. È basata su due regole: \begin{itemize}
+	\item "proteggere" tutte le letture e scritture con \textbf{lock}
+	\item un \textbf{vincolo} sulle richieste e i rilasci del lock: una transazione, dopo aver rilasciato un lock, non può acquisirne altri.
+\end{itemize}
+
+Si possono distinguere due fasi nell'esecuzione della transazione:\begin{enumerate}
+	\item Una prima fase in cui si \textbf{acquisiscono i lock} per le risorse a cui si deve accedere - \textbf{FASE CRESCENTE} - Passaggio da r\_lock a w\_lock sta nella fase crescente.
+	\item Una seconda fase in cui si rilasciano i lock acquisiti - \textbf{FASE CALANTE}.
+\end{enumerate}
 			
+\begin{minipage}{0.48\linewidth}
+	\centering
+	\includegraphics[width=\linewidth]{graphics/screenshot075}
+\end{minipage}		
+\hfill
+\begin{minipage}{0.48\linewidth}
+Lo schedule 2Pl è un sistema in cui le \textbf{transazioni sono ben formate} rispetto ai locking, cioè richiedono il lock prima di accedere e lo rilasciano prima di terminare con un \textbf{Lock Manager} che rispetta la politica nella tabella e in cui le transazioni seguono il principio del locking a due fasi. È un sistema transazionale caratterizzato dalla serializzabilità delle proprie transazioni. La classe 2PL contiene gli schedule che soddisfano queste condizioni.
+\end{minipage}
+
+\newpage
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\linewidth]{graphics/screenshot076}
+\end{figure}
+
+	
+	\subsubsection{Locking a due fasi stretto}		
+	Restrizione del protocollo 2PL, la condizione aggiuntiva è che \textbf{i lock possono essere rilasciati solo dopo il commit o abort}. Permette di rimuovere l'ipotesi \textit{commit-proiezione} ed elimina il rischio di letture sporche. I lock vengono rilasciati solo al termine della transazione, dopo che i dati sono stati portati nel loro stato finale. Versione di 2PL molto usaa nei DBMS commerciali.
+	
 			
-			
-			
+	\subsubsection{Stallo (deadlock) - blocco critico}
+	Avviene quando si hanno delle \textbf{attese incrociate}, ovvero quando due transazioni detengono ciascuna una risorsa e aspettano la risorsa detenuta dall'altra.
+	Esempio: \begin{itemize}
+		\item $t_1$: read(x), write(y)
+		\item $t_2$: read(y), write(x)
+		\item Schedule (2PL):
+		$r\_lock_1(x), r\_lock_2(y), read_1(x), read_2(y) w\_lock_1(y), w\_lock_2(x)$
+	\end{itemize}
+Nessuna delle due transazioni riesce a procedure e il sistema è bloccato. $t_1$ è in attesa che si liberi y che è bloccato da $t_2$, mentre $t_2$ è in attesa che si liberi x che è bloccato da $t_1$. Ci sono tre soluzioni:\begin{enumerate}
+	\item \textbf{Timeout:} tecnica molto semplcie usata in molti DBMS commerciali. Le transazioni rimangono in attesa per un tempo pregissato ragionevole, se passa questo tempo e la risorsa non è stata concess allora alla richiesta di lock viene data risposta negativa. Quindi la transazione in deadlock viene tolta dalla condizione di attesa e presumibilmente abortita. 
+	\item \textbf{Rilevamento dello stallo:} questa tecnica prevede di \textit{non porre vincoli} al comportamento del sistema, ma di controllare il contenuto delle tabelle di lock tutte le volte che si ritiene necessario per rilevare eventuali situazioni di blocco. È oneroso e complicato; il rilevamento di un blocco critico richiede di analizzare le relazioni di attesa tra le varie transazioni e di determinare se esiste un ciclo.
+	\item \textbf{Prevenzione dello stallo:} vi sono diverse tecniche per prevenire il blocco critico: \begin{enumerate}
+		\item Richiedere il \textbf{lock di tutte le risorse} necessarie alla transazione in una sola volta. Problema: spesso le transazioni non conoscono a priori le risorse a cui vogliono accedere.
+		\item Le transazioni acquisiscono un timestamp e viene consentita l’attesa di $t_i$ su una risorsa acquisita da $t_j$ solo se vale una certa relazione di precedenza tra i timestamp di $t_i$ e $t_j$ (esempio $i<j$)
+		\item Si basa sull’osservazione che molti deadlock si verificano all’atto di
+		"incrementare" un lock da lettura a scrittura: Due transazioni acquisiscono lock condivisi sullo stesso dato e poi cercano di incrementare il lock bloccandosi a vicenda. Soluzione: Introduzione di un nuovo tipo di lock detto di \textbf{UPDATE} richiesto per leggere un dato su cui successivamente si vuole scrivere.
+	
+	\end{enumerate}
+\end{enumerate}
+
+\textbf{UPDATE LOCK:} Il deadlock più frequente avviene quando due transazioni concorrenti vogliono prima leggere e poi scrivere la stessa risorsa. Per evitare questa situazione, i sistemi offrono gli update lock (UL). L’update lock viene acquisito da transazioni che vogliono inizialmente leggere un oggetto per poi modificarne il valore. Il lock di update è incompatibile con altri lock di update. In un certo istante una sola transazione può avere un lock di update su un dato. Il lock di update è compatibile con un lock di lettura. All’atto di passare alla scrittura la transazione deve comunque richiedere un lock in scrittura e quindi resta in attesa che eventuali altri lettori terminino la loro azione.
 			
 			
 			
