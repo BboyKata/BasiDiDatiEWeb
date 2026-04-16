@@ -41,7 +41,7 @@
 	left=20mm,
 	top=20mm,
 }
-\title{\Huge \textbf{Basi di dati}
+\title{\Huge \textbf{Basi di Dati e Web}
 	\small
 	
 	
@@ -1182,7 +1182,7 @@ strettamente inclusa in quella degli schedule VSR
 Anche la conflict-serializzabilità, pur più rapidamente verificabile è inutilizzabile in pratica: l'algoritmo, con opportune strutture dati richiede tempo lineare, però la conflict-serializzabilità risulta ancora eccessivamente onerosa in pratica. La tecnica sarebbe efficiente se potessimo conoscere il grafo dall’inizio, ma così non è: non è praticabile mantenere il grafo, aggiornarlo e verificarne l’aciclicità ad ogni richiesta di operazione.
 			
 \subsubsection{Soluzioni utilizzate in pratica: LOCKING}
-Il meccanismo più noto e il primo usato dai DBMS si basa sul \textbf{LOCKING}. In questa soluzione tutte le operazioni di lettura e scrittura devono essere protette da opportune primitive:\begin{itemize}
+Il più noto e il primo usato dai DBMS si basa sul \textbf{LOCKING}. In questa soluzione tutte le operazioni di lettura e scrittura devono essere protette da opportune primitive:\begin{itemize}
 	\item Tutte le letture sono precedute da \textbf{r\_lock} (lock condiviso) e seguite da \textbf{unlock}. Su un dato possono essere attivi più lock di questo tipo.
 	\item Tutte le scritture sono precedute da \textbf{w\_lock} (lock esclusivo) e seguite da \textbf{unlock}. Non può coesistere con altri lock sullo stesso dato.
 \end{itemize}
@@ -1288,4 +1288,119 @@ Nessuna delle due transazioni riesce a procedure e il sistema è bloccato. $t_1$
 			Data la chiave di ricerca V, ad ogni nodo intermedio, se $V<K$ allora si segue il puntatore $P_0$, se $V\geq K_F$ si segue il puntatore $P_F$, altrimenti si segue il puntatore $P_j$ tale che $K_j \leq K < K_{j+1}$. Se l'indice è \textbf{primario} i nodi foglia contengono l'intera tupla, se l'indice è secondario i nodi foglia contengono i putnatori ai blocchi della BD che contengono le tuple. 
 			
 			\textbf{Inserimenti e cancellazioni:} nel caso di inserimento o eliminazione di una tupla devo risistemare l'albero affinché rispetti i vincoli. Se c'è posto nella foglia lo inserisco. Se arrivo in un nodo con numero di chiavi massimo devo dividere il nodo, splittarlo, in modo da inserirlo, ovviamente aggiungendo un nuovo puntatore. Eliminazione, c'è la possibilità di fare un merge. Se devo modificare il valore di una chiave, devo trattarle come eliminazioni seguite da inserimenti. 
+			
+			\newpage
+			\section{Cose che mi sono dimenticato di inserire}
+	\paragraph{Organizzazione dei nodi (non foglia) in un B+Tree}
+	\textit{F} valori ordinati di chiave:
+	\begin{itemize}
+		\item Ogni chiave $K_i$ ($1\leq i \leq F$) è seguita da un puntatore $P_i$
+		\item $K_1$ è preceduta da un puntatore $P_0$
+		\item $F+1$ puntatori (Fan Out albero)
+	\end{itemize}
+	I nodi possono contenere meno di $F$ valori chiave e meno di $F+1$ puntatori.
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot077}
+	\end{figure}
+	
+	\textbf{Meccanismo di ricerca:} seguire i puntatori partendo dalla radice, se la \textbf{chiave di ricerca} è \textbf{V}, ad ogni nodo intermedio:\begin{itemize}
+		\item Se $V<K_1$ si segue il puntatore $P_0$;
+		\item Se $V\geq K_F$ si segue il puntatore $P_F$
+		\item Atrimenti si segue il puntatore $P_j$ tale che $K_j \leq V \leq K_{j+1}$
+	\end{itemize}
+	
+	La ricerca procede fino ai nodi foglia: \begin{itemize}
+		\item Se l’indice è \textbf{PRIMARIO} i nodi foglia contengono l’intera tupla
+		\item Se l’indice è \textbf{SECONDARIO} i nodi foglia contengono i puntatori ai blocchi
+		della BD che contengono le tuple
+	\end{itemize}
+	
+	\newpage
+	\subsection{Gestore delle interrogazioni}
+	Modulo cruciale di un DBMS, responsabile dell'esecuzione efficiente di operazioni che sono specificate a livello molto alto, garantisce l'indipendenza dei dati. È più importante nei sistemi attuali che in quelli "vecchi". Le interrogazioni vengono espresse ad alto livello, poi l'\textit{ottimizzatore} sceglie la strategia realizzativa a partire dall'istruzione SQL.
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot078}
+	\end{figure}
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.9\linewidth]{graphics/screenshot079}
+	\end{figure}
+	
+	\paragraph{Ottimizzazione basata sui costi}
+	Dipende dalle strutture di memorizzazione e dal modello dei costi prescelto. Ogni DBMS possiede informazioni quantitative relative alle caratteristiche delle tabelle:\textbf{ PROFILI DELLE RELAZIONI}.
+	\paragraph{Profili delle relazioni}
+	I profili delle relazioni sono memorizzate nel \textit{dizionario dei dati} e contengono \textbf{informazioni quantitative:}\begin{itemize}
+		\item \textbf{Cardinalità di ciascuna relazione}: numero tuple
+		\item \textbf{Dimensioni} delle \textit{tuple}
+		\item \textbf{Dimensioni} di ciascun \textit{attributo}
+		\item Numero di \textbf{valori distinti} degli attributi
+		\item Valore \textbf{minimo e massimo} di ciascun attributo 
+	\end{itemize}
+	Sono memorizzate nel "catalogo" e aggiornate periodicamente. Sono utilizzati nella fase finale dell'ottimizzazione, per stimare le dimensioni dei risultati intermedi.
+	\paragraph{Ottimizzazione algebrica}
+	Il termine ottimizzazione è improprio (anche se efficace)
+	perché il processo utilizza \textbf{euristiche}. Si basa sulla nozione di equivalenza:\textit{ Due espressioni sono equivalenti se producono lo stesso risultato
+	qualunque sia l'istanza attuale della base di dati}. I DBMS cercano di eseguire espressioni equivalenti a quelle
+	date, ma meno "costose".
+	
+	\textbf{Euristica fondamentale:} selezioni e proiezioni il più presto possibile (per ridurre le dimensioni dei risultati intermedi):
+	\begin{itemize}
+		\item "Push selections down"
+		
+		\textit{Esempio: }Assumiamo A attributo di $R_2$, allora $SEL_{A=10}(R_1 JOIN R_2) = R_1 JOIN (SEL_{A=10}(R_2))$
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.6\linewidth]{graphics/screenshot080}
+		\end{figure}
+		
+		\item "Push projections down"
+	\end{itemize}
+	Internamente le interrogazioni vengono rappresentate come \textbf{alberi}, le cui \textit{foglie} sono i \textit{dati (relazioni, file)} e i \textit{nodi intermedi} sono gli \textit{operatori}.
+	
+	Procedura euristica di ottimizzazione:\begin{itemize}
+		\item Decomporre le selezioni congiuntive in successive selezioni
+		atomiche
+		\item Anticipare il più possibile le selezioni
+		\item In una sequenza di selezioni, anticipare le più selettive
+		\item Combinare prodotti cartesiani e selezioni per formare join
+		\item Anticipare il più possibile le proiezioni (anche
+		introducendone di nuove)
+	\end{itemize} 
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{graphics/screenshot081}
+	\end{figure}
+	
+	I DBMS implementano gli operatori dell'algebra relazionale
+	(o meglio, loro combinazioni) per mezzo di operazioni di
+	livello abbastanza basso, che però possono implementare
+	vari operatori "in un colpo solo". Gli operatori fondamentali sono \textbf{scansione} ed \textbf{accesso diretto}, a livello più alto, \textbf{l'ordinamento}, e a livello ancora più alto il \textbf{join}
+	
+	\paragraph{Ottimizzazione basata sui costi}
+	Sono presenti varie dimensioni di ottimizzazione, ed è un problema articolato, con scelte relative a: operazioni da eseguire (scansione/accesso diretto), ordine delle operazioni (ordine di un triplo join), i dettagli del metodo (quale metodo di join). Architetture parallele e distribuite aprono ulteriori gradi di libertà; Di fronte ad un problema così complesso, gli ottimizzatori
+	dispongono di formule di costo approssimate.
+	
+	\textbf{Processo di ottimizzazione} si costruisce un albero di decisione, chiamato \textit{albero delle alternative} con le varie alternative, detti \textbf{piani di esecuzione}. Nell'\textbf{albero delle alternative} ogni nodo corrisponde a fissare una particolare opzione; le dimensioni dell'albero crescono in funzione del numero di alternative presenti.
+	Ogni nodo foglia corrisponde a una specifica strategia di esecuzione dell'interrogazione descritta dalle scelte che si trovano percorrendo il cammino che va dalla radice al nodo foglia.
+	Il problema di ottimizzazione viene quindi \textit{riformulato come ricerca del nodo foglia che corrisponde al costo minore}. Si valuta il costo di ciascun piano e si sceglie il piano di costo minore. L'ottimizzatore trova di solito una \textit{buona} soluzione, non necessariamente l'\textit{ottimo}. Soluzioni che rientrino nello stesso ordine di grandezza prestazionale rispetto alla soluzione ottimale. Si escludono interi sotto-alberi che hanno un costo parziale peggiore del costo di una strategia globale già individuata; Vengono adottate tecniche di\textit{ ricerca operativa}, denominate \textbf{"branch and
+	bound"}, per l’eliminazione di sotto-alberi. 
+	
+	\mybox{\textit{Non ha senso trovare la soluzione ottima in tempo molto elevato, quando è
+			possibile trovare una soluzione buona in un tempo limitato e realizzare la
+			strategia in un tempo globale (che comprende il tempo di ottimizzazione)
+			inferiore a quello della soluzione ottima.}}
+	\paragraph{Formule di costo:} le formule di costo associano a ciascuna operazione intermedia un costo in termini di \textbf{operazioni di ingresso/uscita} e \textbf{istruzioni necessarie per valutare il risultato} dell'interrogazione.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.6\linewidth]{graphics/screenshot082}
+	\end{figure}
+	
+	
+	
 \end{document} 
